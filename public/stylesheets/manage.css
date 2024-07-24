@@ -1,0 +1,770 @@
+button {
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+input {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+button {
+  background: transparent;
+  border: none;
+}
+
+button:focus {
+  outline: none;
+  border: none;
+}
+
+h1 {
+  left: 50%;
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  font-size: 30px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+
+  display: flex;
+}
+
+.all_select {
+  width: 30%;
+  font-size: 11px;
+  color: white;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.login-box .user-box input,
+.login-box .user-box select {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+option {
+  background-color: #141e30;
+}
+
+.login-box .user-box .select_1 {
+  color: white;
+}
+
+.login-box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.text_ara {
+  padding: 10px 0;
+  font-size: 20px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.login-box form .submit_btn {
+  position: relative;
+  display: inline-block;
+  left: 105px;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  margin: 40px 0 50px 0;
+  letter-spacing: 4px;
+}
+
+.serch-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  height: 85%;
+  padding: 30px 40px 40px 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+.serch-box h2 {
+  font-size: 30px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.change_type {
+  display: inline-block;
+  height: 40px;
+  width: max-content;
+  color: #03e9f4;
+  font-size: 13px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.5s;
+  letter-spacing: 4px;
+}
+
+.change_type:hover {
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4;
+}
+
+.file_txt {
+  color: white;
+  margin: 0px 20px 0px 20%;
+}
+
+.login-box .submit_btn:hover {
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4;
+}
+
+.login-box .submit_btn span {
+  position: absolute;
+  display: block;
+}
+
+/* CSS rules are kept repetitive so that you can get CSS rules for each button easily :) */
+
+.button-cover,
+.knobs,
+.layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.button {
+  position: relative;
+  top: 50%;
+  width: 150px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.button.r,
+.button.r .layer {
+  border-radius: 100px;
+}
+
+.checkbox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.knobs {
+  z-index: 2;
+}
+
+.layer {
+  width: 90%;
+  background-color: inherit;
+  border-color: white;
+  border-style: solid;
+  border-radius: 1px;
+  transition: 0.3s ease all;
+  z-index: 1;
+}
+
+/* Button 1 */
+#button-1 {
+  left: 90px;
+}
+
+#button-1 .knobs::before {
+  content: "벌점";
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  width: 30px;
+  height: 20px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+  padding: 9px 4px;
+  background-color: #ff1100;
+  border-radius: 50%;
+  transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+}
+
+#button-1 .checkbox:checked + .knobs:before {
+  content: "상점";
+  left: 95px;
+  background-color: #03a9f4;
+}
+
+#button-1 .knobs,
+#button-1 .knobs:before,
+#button-1 .layer {
+  transition: 0.3s ease all;
+}
+
+.cover {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: #141e307d;
+  overflow: hidden;
+}
+
+.ui-circle-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -30px;
+  margin-top: -30px;
+}
+
+.ui-circle-loading .animate {
+  width: 60px;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+}
+
+.ui-circle-loading .animate li {
+  list-style: none;
+  padding: 0;
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  border-radius: 50%;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-animation-name: loading-item;
+  -webkit-animation-duration: 6s;
+  -webkit-animation-iteration-count: infinite;
+}
+
+.ui-circle-loading .animate li:nth-child(0) {
+  -webkit-animation-delay: 0s;
+}
+
+.ui-circle-loading .animate li:nth-child(1) {
+  -webkit-animation-delay: 0.1s;
+}
+
+.ui-circle-loading .animate li:nth-child(2) {
+  -webkit-animation-delay: 0.2s;
+}
+
+.ui-circle-loading .animate li:nth-child(3) {
+  -webkit-animation-delay: 0.3s;
+}
+
+.ui-circle-loading .animate li:nth-child(4) {
+  -webkit-animation-delay: 0.4s;
+}
+
+.ui-circle-loading .animate li:nth-child(5) {
+  -webkit-animation-delay: 0.5s;
+}
+
+.ui-circle-loading .animate li:nth-child(6) {
+  -webkit-animation-delay: 0.6s;
+}
+
+@-webkit-keyframes loading-item {
+  0% {
+    -webkit-transform: rotate(0) translateX(-100px) translateY(30px);
+    -webkit-animation-timing-function: linear;
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  5% {
+    -webkit-transform: rotate(0deg) translateX(0) translateY(30px);
+    -webkit-animation-timing-function: cubic-bezier(0.1, 0.5, 0.9, 0.5);
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  30% {
+    -webkit-transform: rotate(-360deg) translateX(0) translateY(30px);
+    -webkit-animation-timing-function: cubic-bezier(0.1, 0.5, 0.9, 0.5);
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  55% {
+    -webkit-transform: rotate(-720deg) translateX(0) translateY(30px);
+    -webkit-animation-timing-function: cubic-bezier(0.1, 0.5, 0.9, 0.5);
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  80% {
+    -webkit-transform: rotate(-1080deg) translateX(0) translateY(30px);
+    -webkit-animation-timing-function: linear;
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  85% {
+    -webkit-transform: rotate(-1080deg) translateX(100px) translateY(30px);
+    -webkit-animation-timing-function: linear;
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  100% {
+    -webkit-transform: rotate(0) translateX(-100px) translateY(30px);
+    -webkit-animation-timing-function: linear;
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
+
+.btn_ara {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+}
+
+.class_btn {
+  color: white;
+  padding: 10px 5px;
+  margin: 6px 4px;
+  background-color: #141e30;
+  border: 2px solid #141e30;
+  font-size: 20px;
+  text-decoration: none;
+  overflow: hidden;
+  letter-spacing: 4px;
+  text-align: center;
+  transition: 0.5s;
+}
+
+.class_btn:hover {
+  border: 1.5px solid white;
+}
+
+.title_btn {
+  color: white;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  overflow: hidden;
+  letter-spacing: 4px;
+  text-align: center;
+  transition: 0.5s;
+}
+
+.title_btn:hover {
+  color: #03e9f4;
+}
+
+.std_ara {
+  overflow-y: auto;
+  height: 70%;
+  margin: 10px;
+  border: 2px solid gray;
+  padding: 10px;
+}
+
+.colum_index {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 5fr;
+  margin-left: 0.8%;
+  width: 98.5%;
+}
+
+.colum_name {
+  padding: 10px;
+  border: 1px solid #263348;
+  color: white;
+  font-size: 17px;
+  text-align: center;
+}
+
+.std_card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 5fr;
+}
+
+.std_text {
+  padding: 10px;
+  border: 1px solid #263348;
+  color: white;
+  font-size: 17px;
+  text-align: center;
+}
+
+.std_btn_box {
+  padding: 5px;
+  text-align: left;
+}
+
+.std_btn {
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+
+.std_btn:hover {
+  background-color: #263348;
+}
+
+.std_state {
+  align-items: center;
+}
+
+.state_out {
+  background-color: #ff0000a0;
+}
+
+.state_nan {
+  background-color: #0000ffa0;
+}
+
+.state_alt {
+  background-color: #ff7000a0;
+}
+
+.state_target {
+  background-color: #8800ffa0;
+}
+
+.manage-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 85%;
+  padding: 30px 40px 40px 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+.manage-box h2 {
+  font-size: 30px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.manager_ara {
+  overflow-y: auto;
+  height: 70%;
+  margin: 10px;
+  border: 2px solid gray;
+  padding: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.change_btn_div {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.change_btn_div form {
+  width: fit-content;
+  flex: 0 0 auto;
+}
+
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.toast {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.toast.hide {
+  opacity: 0;
+}
+
+.toast.toast_ok {
+  background-color: #333;
+  color: #fff;
+}
+
+.toast.toast_error {
+  background-color: red;
+  color: #fff;
+}
+
+.toast.toast_wrong {
+  background-color: blue;
+  color: #fff;
+}
+
+.footer-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
+
+.footer {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  background-color: #333;
+  color: #fff;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.man_card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr;
+}
+
+.man_text {
+  padding: 10px;
+  border: 1px solid #263348;
+  color: white;
+  font-size: 17px;
+  text-align: center;
+}
+
+.man_btn_box {
+  padding: 5px;
+  text-align: left;
+}
+
+.man_btn {
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+
+.man_btn:hover {
+  background-color: #263348;
+}
+
+.roundButton {
+  margin-top: 10px;
+  margin-left: 45%;
+  width: 35px;
+  height: 35px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.roundButton:hover {
+  background-color: #2980b9;
+}
+
+.small_font {
+  font-size: 8px;
+}
+
+.medium_font {
+  font-size: 15px;
+}
+
+.pw_button {
+  z-index: 99;
+  display: inline-block;
+  height: 25px;
+  width: max-content;
+  color: #03e9f4;
+  font-size: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.5s;
+  letter-spacing: 4px;
+}
+
+.pw_button:hover {
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4;
+}
+
+.foot {
+  pointer-events: none;
+  display: inline;
+  width: 100px;
+  height: min-content;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 20px; /* 필요에 따라 여백을 조정하세요 */
+}
+
+.foot h5 {
+  font-size: 15px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .login-box,
+  .serch-box,
+  .manage-box {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .conditional-style {
+    display: none;
+  }
+
+  .login-box h2,
+  .serch-box h2,
+  .manage-box h2 {
+    font-size: 24px;
+  }
+
+  .login-box .user-box input,
+  .login-box .user-box select,
+  .login-box .user-box label,
+  .text_ara {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .login-box form .submit_btn,
+  .change_type,
+  .std_btn,
+  .man_btn {
+    font-size: 14px;
+    padding: 8px 16px;
+    margin: 20px 0 30px;
+  }
+
+  .class_btn {
+    font-size: 16px;
+    padding: 8px 4px;
+  }
+
+  .roundButton {
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+  }
+
+  .pw_button {
+    font-size: 8px;
+    height: 20px;
+  }
+
+  .foot h5 {
+    font-size: 12px;
+  }
+
+  .colum_index,
+  .std_card {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .man_card {
+    grid-template-columns: 1fr 1fr 2fr;
+  }
+
+  .colum_name,
+  .std_text,
+  .man_text {
+    font-size: 14px;
+  }
+
+  .std_ara,
+  .manager_ara {
+    height: 60%;
+  }
+}

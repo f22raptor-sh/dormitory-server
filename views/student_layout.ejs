@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사벌점 관리 프로그램</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/student_layout.css" />
+  </head>
+
+  <body>
+    <div class="login-box box">
+      <div style="text-align: center; margin: 0 0 30px 0">
+        <img src="./images/favicon.ico" width="30%" height="30%" />
+      </div>
+      <h3>BSIS 기숙사 상벌점 관리 프로그램</h3>
+      <h2><%= number %> <%= name %></h2>
+      <h3 class="conditional-style <%= display1 ? '' : 'hidden' %>">
+        상점: <%= plus_point %>점 / 벌점: <%= minus_point %>점
+      </h3>
+      <h3 class="conditional-style <%= display2 ? '' : 'hidden' %>">
+        <%= state %>
+      </h3>
+      <h3>
+        <button class="pw_button" onclick="change_pw()">
+          비밀번호 수정하기
+        </button>
+      </h3>
+      <div class="log_box">
+        <% for (const [timestamp, content] of Object.entries(log)) { %>
+        <div class="log_text"><%= timestamp %> - <%= content %></div>
+        <% } %>
+      </div>
+    </div>
+    <h5
+      style="color: white; margin: 10px; position: fixed; bottom: 0; right: 0"
+    >
+      Made by PSH in HW
+    </h5>
+  </body>
+  <script>
+    async function change_pw() {
+      const password1 = prompt("비밀번호를 입력해주세요");
+      if (password1) {
+        const password2 = prompt("비밀번호 확인");
+        if (password2) {
+          if (password1 == password2) {
+            try {
+              const response = await fetch("/user/pwchange", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  password: password1,
+                }),
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                if (data.message != "Good") {
+                  location.reload();
+                } else {
+                  alert("서버 오류.\n관리자에게 문의해주세요.");
+                }
+              } else {
+                alert("서버 응답이 없습니다.\n관리자에게 문의해주세요.");
+              }
+            } catch (error) {
+              console.log(error);
+              alert("데이터 전송 중 오류.\n다시 시도해주세요.");
+            }
+          } else {
+            alert("비밀번호를 잘못입력했습니다.\n다시 시도해주세요.");
+          }
+        }
+      }
+    }
+  </script>
+</html>

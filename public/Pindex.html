@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사 상벌점</title>
+    <link rel="stylesheet" href="./stylesheets/login.css" />
+  </head>
+
+  <body>
+    <div class="login-box box">
+      <h2>BSIS 기숙사 상벌점<br />관리 프로그램<br />로그인</h2>
+      <form id="user-form" action="/user" method="post">
+        <div class="user-box">
+          <input type="text" name="name" required="" id="name" />
+          <label>ID</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="pw" required="" id="pw" />
+          <label>PASSWORD</label>
+        </div>
+
+        <button class="submit_btn" type="submit" href="#">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          submit
+        </button>
+      </form>
+    </div>
+    <h5
+      style="color: white; margin: 10px; position: fixed; bottom: 0; right: 0"
+    >
+      Made by PSH in HW
+    </h5>
+    <script>
+      document
+        .getElementById("user-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const innerName = document.getElementById("name").value;
+          const innerPW = document.getElementById("pw").value;
+          this.submit(); // 폼 제출
+        });
+    </script>
+  </body>
+</html>

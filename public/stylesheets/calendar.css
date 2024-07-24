@@ -1,0 +1,183 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+input[type="text"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* input type="date"의 스타일을 조정하는 예시 */
+input[type="date"] {
+  /* 폰트 크기 및 글꼴 */
+  font-size: 16px;
+  /* 다른 스타일 */
+  margin: 10px 0;
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  /* 배경색과 글자색 */
+  background-color: white;
+  color: black;
+}
+
+.calendar_box input[type="text"] {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.calendar_box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+button {
+  color: white;
+  background: transparent;
+  border: none;
+}
+
+button:focus {
+  outline: none;
+  border: none;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.login-box h2 {
+  font-size: 30px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.calendar {
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.calendar_box {
+  width: 20%;
+  margin-left: 20px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+}
+
+.calendar_box h2 {
+  font-size: 30px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.calendar_box h3 {
+  font-size: 25px;
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.calendar_box .user-box {
+  position: relative;
+  display: flex;
+}
+
+.user-box input[type="text"]:focus ~ label,
+.user-box input[type="text"]:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.day_input {
+  margin: 20px 0px;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+form .submit_btn {
+  margin-left: 25%;
+  display: block;
+  color: #03e9f4;
+  font-size: 16px;
+  overflow: hidden;
+  transition: 0.5s;
+  padding: 10px;
+}
+
+.login-box .submit_btn:hover {
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4;
+}
+
+.hidden {
+  display: none;
+}
+
+.change_type {
+  margin: 60% 0 0 0;
+  display: inline-block;
+  height: 40px;
+  width: max-content;
+  color: #03e9f4;
+  font-size: 13px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.5s;
+  letter-spacing: 4px;
+}
+
+.change_type:hover {
+  cursor: pointer;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4;
+}

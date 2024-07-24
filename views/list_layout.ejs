@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사벌점 관리 프로그램</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/manage.css" />
+    <style>
+      /* 팝업 스타일 */
+      .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+      }
+
+      /* 어두운 푸른색 계열의 폼 스타일 */
+      .popup form {
+        color: #fff;
+      }
+
+      /* x 버튼 스타일 */
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        color: #fff;
+        font-size: 20px;
+      }
+
+      /* 학번, 시작 날짜, 종료 날짜 입력란 스타일 (예시) */
+      .user-box label,
+      .day_input label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .user-box input[type="text"],
+      .day_input input[type="date"],
+      .submit_btn {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: #2c3e50;
+        /* 어두운 푸른색 계열 */
+        color: #fff;
+      }
+
+      .submit_btn:hover {
+        background-color: #34495e;
+        /* 버튼 호버 시 색 변경 */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="popup" id="calendar_popup" style="display: none">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <form id="calendar_form">
+        <div class="user-box">
+          <label>학번</label>
+          <input id="stdnum" type="text" required="" name="std_number" />
+        </div>
+        <div class="day_input">
+          <label>시작 날자</label>
+          <input type="date" required="" name="start_day" id="start_day" />
+        </div>
+        <div class="day_input">
+          <label>종료 날자</label>
+          <input type="date" required="" name="end_day" />
+        </div>
+        <button type="submit" class="submit_btn pointer">일정 추가</button>
+      </form>
+    </div>
+    <div class="popup" id="log_popup" style="display: none; color: white">
+      <span class="close-btn" onclick="closeLog()">&times;</span>
+      <div id="log_text"></div>
+    </div>
+    <div id="toast-container"></div>
+    <div class="serch-box box">
+      <h2>
+        <button class="title_btn pointer" onclick="select_room('all')">
+          벌점 조회
+        </button>
+      </h2>
+      <div class="btn_ara"><%- btn_ara %></div>
+      <div class="colum_index">
+        <div class="colum_name">학번</div>
+        <div class="colum_name">이름</div>
+        <div class="colum_name">상태</div>
+        <div class="colum_name">총점</div>
+        <div class="colum_name">상점</div>
+        <div class="colum_name">벌점</div>
+        <div class="colum_name">추가상점</div>
+        <div class="colum_name">추가벌점</div>
+        <div class="colum_name">버튼</div>
+      </div>
+      <div class="std_ara" id="std_ara"><%- std_ara %></div>
+      <form action="/auth/1" method="GET" style="display: flex">
+        <button
+          class="change_type pointer"
+          type="submit"
+          style="display: block"
+        >
+          벌점 관리하기
+        </button>
+      </form>
+    </div>
+    <div id="cover" class="cover hidden">
+      <div id="loading" class="ui-circle-loading">
+        <ul class="animate">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="/javascripts/manage.js"></script>
+  <script>
+    var statelog = 0;
+    document.addEventListener("click", function (event) {
+      const popup = document.getElementById("log_popup");
+      console.log(popup.style.display == "block");
+      console.log(popup.style.display);
+      if (
+        event.target !== popup &&
+        !popup.contains(event.target) &&
+        statelog == 1
+      ) {
+        popup.style.display = "none";
+        statelog == 0;
+      }
+    });
+    document.getElementById("std_ara").addEventListener("scroll", function () {
+      localStorage.setItem("scrollPosition", this.scrollTop);
+    });
+
+    window.onload = function () {
+      var scrollPosition = localStorage.getItem("scrollPosition");
+      var roomNumber = localStorage.getItem("room_button");
+      if (scrollPosition) {
+        document.getElementById("std_ara").scrollTop = scrollPosition;
+      }
+      if (roomNumber) {
+        select_room(roomNumber);
+      }
+    };
+    const form1 = document.getElementById("calendar_form");
+
+    form1.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(form1);
+      const send_data = {
+        std_num: formData.get("std_number"),
+        start_day: formData.get("start_day"),
+        end_day: formData.get("end_day"),
+      };
+
+      try {
+        const response = await fetch("/calendar/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(send_data),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          console.log("server err");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    const cover = document.getElementById("cover");
+
+    function Toast_show(message, state = 1) {
+      let toast = document.createElement("div");
+      toast.classList.add("toast");
+      if (state == 1) {
+        toast.classList.add("toast_ok");
+      } else if (state == 2) {
+        toast.classList.add("toast_error");
+      } else if (state == 3) {
+        toast.classList.add("toast_wrong");
+      }
+      toast.innerText = message;
+      let container = document.getElementById("toast-container");
+      container.appendChild(toast);
+      setTimeout(function () {
+        toast.classList.add("hide");
+        setTimeout(function () {
+          container.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    function select_room(room_num) {
+      const elements = document.querySelectorAll(`.std_card`);
+      elements.forEach((element) => {
+        const numberClass = [...element.classList].find((className) =>
+          /^\d{3}$/.test(className)
+        );
+        if (room_num == "all") {
+          element.classList.remove("hidden");
+        } else if (room_num == "out") {
+          if (element.classList.contains("out")) {
+            element.classList.remove("hidden");
+          } else {
+            element.classList.add("hidden");
+          }
+        } else if (numberClass == room_num) {
+          element.classList.remove("hidden");
+        } else {
+          element.classList.add("hidden");
+        }
+      });
+      localStorage.setItem("room_button", room_num);
+    }
+
+    function point_plus(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "plus", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+    function point_minus(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "minus", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+
+    function point_extra_plus(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "extra_plus", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+    function point_extra_minus(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "extra_minus", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+    function log_show(event, std_num) {
+      event.stopPropagation();
+      const popup = document.getElementById("log_popup");
+      const logText = document.getElementById("log_text");
+      popup.style.display = "block";
+      statelog = 1;
+      fetch("/list/log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          console.log(data);
+          var multiLineText = "";
+          for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+              multiLineText += data[key] + "<br>";
+            }
+          }
+          logText.innerHTML = multiLineText.slice(0, -4);
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+
+    function out(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "out", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+    function end(std_num) {
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "end", std_number: std_num }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
+    }
+    function popup(std_num) {
+      const Popup = document.getElementById("calendar_popup");
+      const std = document.getElementById("stdnum");
+
+      const input = document.getElementById("start_day");
+      const today = new Date().toISOString().split("T")[0];
+      input.value = today;
+      std.value = std_num;
+      Popup.style.display = "block";
+    }
+
+    function closePopup() {
+      const Popup = document.getElementById("calendar_popup");
+      Popup.style.display = "none";
+    }
+
+    function closeLog() {
+      const popup = document.getElementById("log_popup");
+      popup.style.display = "none";
+      statelog = 0;
+    }
+  </script>
+</html>

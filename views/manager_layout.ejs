@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사벌점 관리 프로그램</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/manage.css" />
+  </head>
+
+  <body>
+    <div id="toast-container"></div>
+    <div class="manage-box box">
+      <h2>관리자 관리페이지</h2>
+      <div class="manager_ara">
+        <%- manager_ara %>
+        <button class="roundButton" onclick="add_man()">&plus;</button>
+      </div>
+      <form action="/auth/1" method="GET" style="display: flex">
+        <button
+          class="change_type pointer"
+          type="submit"
+          style="display: block"
+        >
+          벌점 관리하기
+        </button>
+      </form>
+    </div>
+    <div id="cover" class="cover hidden">
+      <div id="loading" class="ui-circle-loading">
+        <ul class="animate">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="/javascripts/manage.js"></script>
+  <script>
+    async function manager_del(man_name) {
+      const result = confirm("관리자를 제거하겠습니까?");
+      if (result) {
+        try {
+          const response = await fetch("/admin/del", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: man_name }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.message != "Good") {
+              location.reload();
+            } else {
+              alert("서버 오류. 관리자에게 문의해주세요.");
+            }
+          } else {
+            alert("서버 응답이 없습니다. 관리자에게 문의해주세요.");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("데이터 전송 중 오류. 다시 시도해주세요.");
+        }
+      }
+    }
+    async function manager_edit(man_name) {
+      const result = confirm("비밀번호를 수정하시겠습니까?");
+      if (result) {
+        const userInput1 = prompt(
+          "새로운 비밀번호를 입력해 주세요",
+          "비밀번호"
+        );
+        if (userInput1 !== null) {
+          const userInput2 = prompt(
+            "비밀번호를 한번 더 입력해 주세요",
+            "비밀번호"
+          );
+          if (userInput2 !== null) {
+            if (userInput1 === userInput2) {
+              try {
+                const response = await fetch("/admin/edit", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    name: man_name,
+                    password: userInput1,
+                  }),
+                });
+
+                if (response.ok) {
+                  const data = await response.json();
+                  if (data.message != "Good") {
+                    location.reload();
+                  } else {
+                    alert("서버 오류. 관리자에게 문의해주세요.");
+                  }
+                } else {
+                  alert("서버 응답이 없습니다. 관리자에게 문의해주세요.");
+                }
+              } catch (error) {
+                console.log(error);
+                alert("데이터 전송 중 오류. 다시 시도해주세요.");
+              }
+            } else {
+              alert("비밀번호가 서로 다릅니다 다시 시도해 주세요.");
+            }
+          } else {
+            alert("입력이 취소되었습니다.");
+          }
+          alert("입력한 값: " + userInput);
+        } else {
+          alert("입력이 취소되었습니다.");
+        }
+      }
+    }
+    async function add_man() {
+      const new_name = prompt("관리자의 이름을 설정해 주세요.");
+      if (new_name) {
+        const new_password = prompt("관리자의 비밀번호를 설정해 주세요.");
+        if (new_password) {
+          try {
+            const response = await fetch("/admin/add", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name: new_name, password: new_password }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data.message != "Good") {
+                location.reload();
+              } else {
+                alert("서버 오류. 관리자에게 문의해주세요.");
+              }
+            } else {
+              alert("서버 응답이 없습니다. 관리자에게 문의해주세요.");
+            }
+          } catch (error) {
+            console.log(error);
+            alert("데이터 전송 중 오류. 다시 시도해주세요.");
+          }
+        }
+      }
+    }
+  </script>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사벌점 관리 프로그램</title>
+    <link rel="stylesheet" href="/stylesheets/calendar.css" />
+  </head>
+
+  <body>
+    <div class="login-box box">
+      <h2>캘린더</h2>
+      <div class="calendar">
+        <iframe
+          src="https://calendar.google.com/calendar/embed?height=550&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FSeoul&showTitle=0&showTabs=1&showPrint=0&showTz=0&src=YnNpc2hlbGxvd29ybGRAZ21haWwuY29t&color=%23039BE5"
+          style="border: solid 1px #777"
+          width="900"
+          height="550"
+          frameborder="0"
+          scrolling="no"
+        ></iframe>
+        <div class="calendar_box">
+          <form id="calendar_form">
+            <div class="user-box">
+              <input type="text" required="" name="std_number" />
+              <label>학번</label>
+            </div>
+            <div class="day_input">
+              <label>시작 날자</label>
+              <input type="date" required="" name="start_day" />
+            </div>
+            <div class="day_input">
+              <label>종료 날자</label>
+              <input type="date" required="" name="end_day" />
+            </div>
+            <button type="submit" class="submit_btn pointer">일정 추가</button>
+          </form>
+          <form action="/auth/1" method="GET">
+            <button class="change_type pointer" type="submit">
+              벌점 관리하기
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      const form1 = document.getElementById("calendar_form");
+
+      form1.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form1);
+        const send_data = {
+          std_num: formData.get("std_number"),
+          start_day: formData.get("start_day"),
+          end_day: formData.get("end_day"),
+        };
+
+        try {
+          const response = await fetch("/calendar/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(send_data),
+          });
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            console.log("server err");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    </script>
+  </body>
+</html>

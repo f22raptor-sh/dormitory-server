@@ -1,0 +1,22 @@
+<div class="man_card">
+  <div class="man_text man_name"><%= name %></div>
+  <input
+    id="input_<%= name %>"
+    class="man_text man_name"
+    type="password"
+    value="<%= password %>"
+    onclick="
+    const inputElement = document.getElementById('input_<%= name %>');
+    inputElement.type = (inputElement.type === 'password') ? 'text' : 'password';
+    "
+    readonly
+  />
+  <div class="man_text man_btn_box">
+    <button class="man_btn" onclick="manager_del('<%= name %>')">
+      관리자 삭제
+    </button>
+    <button class="man_btn" onclick="manager_edit('<%= name %>')">
+      비밀번호 수정
+    </button>
+  </div>
+</div>

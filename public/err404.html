@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BSIS 기숙사 상벌점</title>
+    <link rel="stylesheet" href="../stylesheets/login.css" />
+  </head>
+
+  <body>
+    <div class="login-box box" style="width: 35%">
+      <h2>ERROR</h2>
+
+      <h2>BSIS 기숙사 상벌점<br />관리 프로그램</h2>
+      <h3>
+        로그인이 만료되었거나 비정상적인 접근입니다.<br /><br />3초 후 로그인
+        페이지로 이동합니다.
+      </h3>
+    </div>
+    <script>
+      // 5초 후에 다른 페이지로 이동
+      setTimeout(function () {
+        window.location.href = "/";
+      }, 3500); // 5000ms = 5초
+    </script>
+  </body>
+</html>

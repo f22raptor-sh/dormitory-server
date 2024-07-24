@@ -1,0 +1,47 @@
+<div class="std_card <%= class_num %> <%= display1 ? 'out' : '' %>">
+  <div class="std_text std_num"><%= number %></div>
+  <button
+    class="std_name std_btn pointer std_text"
+    onclick="log_show(event,'<%= number %>')"
+  >
+    <%= name %>
+  </button>
+  <div class="std_text std_state <%= class_state %>" style="font-size: 16px">
+    <%= state %>
+  </div>
+  <div class="std_text std_point medium_font"><%= point %>점</div>
+  <div class="std_text std_point medium_font"><%= plus %>점</div>
+  <div class="std_text std_point medium_font"><%= minus %>점</div>
+  <div class="std_text std_point medium_font"><%= Eplus %>점</div>
+  <div class="std_text std_point medium_font"><%= Eminus %>점</div>
+  <div class="std_text std_btn_box">
+    <button
+      class="std_btn pointer plus"
+      onclick="point_extra_plus('<%= number %>')"
+    >
+      추가 상점
+    </button>
+    <button
+      class="std_btn pointer minu"
+      onclick="point_extra_minus('<%= number %>')"
+    >
+      추가 벌점
+    </button>
+
+    <button
+      class="std_btn pointer out <%= display2 ? '' : 'hidden' %>"
+      onclick="out('<%= number %>')"
+    >
+      명령 퇴사
+    </button>
+    <button
+      class="std_btn pointer end <%= display3 ? '' : 'hidden' %>"
+      onclick="end('<%= number %>')"
+    >
+      명령 퇴사 종료
+    </button>
+    <button class="std_btn pointer" onclick="popup('<%= number %>')">
+      일정 추가
+    </button>
+  </div>
+</div>
