@@ -97,11 +97,13 @@
         <div class="colum_name">이름</div>
         <div class="colum_name">상태</div>
         <div class="colum_name">총점</div>
-        <div class="colum_name">상점</div>
-        <div class="colum_name">벌점</div>
-        <div class="colum_name">추가상점</div>
-        <div class="colum_name">추가벌점</div>
-        <div class="colum_name">버튼</div>
+        <div class="colum_name mobile_hide">상점</div>
+        <div class="colum_name mobile_hide">벌점</div>
+        <div class="colum_name mobile_hide">추가상점</div>
+        <div class="colum_name mobile_hide">추가벌점</div>
+        <div class="colum_name mobile_hide">버튼</div>
+        <div class="colum_name mobile_show">총상점</div>
+        <div class="colum_name mobile_show">총벌점</div>
       </div>
       <div class="std_ara" id="std_ara"><%- std_ara %></div>
       <form action="/auth/1" method="GET" style="display: flex">
@@ -160,7 +162,18 @@
     };
     const form1 = document.getElementById("calendar_form");
 
+    function cover_show() {
+      var coverElement = document.getElementById("cover");
+      coverElement.classList.remove("hidden");
+    }
+
+    function cover_hide() {
+      var coverElement = document.getElementById("cover");
+      coverElement.classList.add("hidden");
+    }
+
     form1.addEventListener("submit", async (event) => {
+      cover_show();
       event.preventDefault();
       const formData = new FormData(form1);
       const send_data = {
@@ -179,11 +192,14 @@
         });
 
         if (response.ok) {
+          cover_hide();
           window.location.reload();
         } else {
+          cover_hide();
           console.log("server err");
         }
       } catch (error) {
+        cover_hide();
         console.log(error);
       }
     });
@@ -235,6 +251,7 @@
     }
 
     function point_plus(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -246,17 +263,19 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
-
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }
     function point_minus(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -268,17 +287,20 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }
 
     function point_extra_plus(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -290,17 +312,19 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
-
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }
     function point_extra_minus(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -312,12 +336,14 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }
@@ -343,10 +369,12 @@
         .then((data) => {
           console.log(data);
           var multiLineText = "";
-          for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-              multiLineText += data[key] + "<br>";
-            }
+          var keys = Object.keys(data);
+          keys.sort();
+          keys.reverse();
+          for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            multiLineText += data[key] + "<br>";
           }
           logText.innerHTML = multiLineText.slice(0, -4);
         })
@@ -356,6 +384,7 @@
     }
 
     function out(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -367,17 +396,19 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
-
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }
     function end(std_num) {
+      cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
@@ -389,13 +420,14 @@
           if (!response.ok) {
             throw new Error("POST 요청 실패");
           }
-
+          cover_show();
           return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
         })
         .then((data) => {
           location.reload();
         })
         .catch((error) => {
+          cover_show();
           Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         });
     }

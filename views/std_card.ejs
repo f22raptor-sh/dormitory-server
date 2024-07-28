@@ -10,11 +10,13 @@
     <%= state %>
   </div>
   <div class="std_text std_point medium_font"><%= point %>점</div>
-  <div class="std_text std_point medium_font"><%= plus %>점</div>
-  <div class="std_text std_point medium_font"><%= minus %>점</div>
-  <div class="std_text std_point medium_font"><%= Eplus %>점</div>
-  <div class="std_text std_point medium_font"><%= Eminus %>점</div>
-  <div class="std_text std_btn_box">
+  <div class="std_text std_point medium_font mobile_hide"><%= plus %>점</div>
+  <div class="std_text std_point medium_font mobile_hide"><%= minus %>점</div>
+  <div class="std_text std_point medium_font mobile_hide"><%= Eplus %>점</div>
+  <div class="std_text std_point medium_font mobile_hide"><%= Eminus %>점</div>
+  <div class="std_text std_point medium_font mobile_show"><%= Splus %>점</div>
+  <div class="std_text std_point medium_font mobile_show"><%= Sminus %>점</div>
+  <div class="std_text std_btn_box mobile_hide">
     <button
       class="std_btn pointer plus"
       onclick="point_extra_plus('<%= number %>')"

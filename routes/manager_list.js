@@ -120,16 +120,24 @@ router.post("/", function (req, res, next) {
                 name: std_data.name,
                 number: std_data.number,
                 state: std_data.state,
-                point: std_data.point,
+                point: Math.round(std_data.point * 10) / 10,
                 class_num: std_data.class_num,
                 class_state: std_data.class_name,
                 display1: std_data.display1,
                 display2: std_data.display2,
                 display3: std_data.display3,
-                plus: std_data.currentPlus,
-                minus: std_data.currentMinus,
-                Eplus: std_data.currentEPlus,
-                Eminus: std_data.currentEMinus,
+                plus: Math.round(std_data.currentPlus * 10) / 10,
+                minus: Math.round(std_data.currentMinus * 10) / 10,
+                Eplus: Math.round(std_data.currentEPlus * 10) / 10,
+                Eminus: Math.round(std_data.currentEMinus * 10) / 10,
+                Splus:
+                  Math.round(
+                    (std_data.currentEPlus + std_data.currentPlus) * 10
+                  ) / 10,
+                Sminus:
+                  Math.round(
+                    (std_data.currentEMinus + std_data.currentMinus) * 10
+                  ) / 10,
               });
               stdTemplates += renderedTemplate;
             });
@@ -155,11 +163,11 @@ router.post("/change", function (req, res, next) {
     .then((snapshot) => {
       const today = new Date();
       const year = today.getFullYear();
-      const month = today.getMonth() + 1;
-      const date = today.getDate();
-      const hours = today.getHours();
-      const minutes = today.getMinutes();
-      const seconds = today.getSeconds();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const date = String(today.getDate()).padStart(2, "0");
+      const hours = String(today.getHours()).padStart(2, "0");
+      const minutes = String(today.getMinutes()).padStart(2, "0");
+      const seconds = String(today.getSeconds()).padStart(2, "0");
       const day = `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
       if (std_method == "plus") {
         updates["plus_point"] = snapshot.val()["plus_point"] + 1;

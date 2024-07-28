@@ -600,6 +600,13 @@ option {
   text-decoration: none;
 }
 
+.mobile_hide {
+  display: block;
+}
+.mobile_show {
+  display: none;
+}
+
 .man_card {
   display: grid;
   grid-template-columns: 1fr 1fr 3fr;
@@ -725,14 +732,22 @@ option {
   .man_btn {
     font-size: 14px;
     padding: 8px 16px;
-    margin: 20px 0 30px;
+  }
+
+  .btn_ara {
+    grid-template-columns: repeat(6, 1fr);
   }
 
   .class_btn {
     font-size: 16px;
     padding: 8px 4px;
   }
-
+  .mobile_hide {
+    display: none;
+  }
+  .mobile_show {
+    display: block;
+  }
   .roundButton {
     width: 30px;
     height: 30px;
@@ -750,7 +765,7 @@ option {
 
   .colum_index,
   .std_card {
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 
   .man_card {
