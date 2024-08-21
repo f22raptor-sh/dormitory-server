@@ -12,6 +12,7 @@ var listRouter = require("./routes/manager_list");
 var adminRouter = require("./routes/admin");
 var calendarRouter = require("./routes/calendar");
 var authRouter = require("./routes/auth");
+var kakaoRouter = require("./routes/kakao");
 const session = require("express-session");
 
 var app = express();
@@ -37,6 +38,7 @@ usersRouter.setDb(db);
 pointRouter.setDb(db);
 listRouter.setDb(db);
 adminRouter.setDb(db);
+kakaoRouter.setDb(db);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -110,6 +112,8 @@ app.use("/point", checkAdmin, pointRouter);
 app.use("/list", checkAdmin, listRouter);
 app.use("/admin", checkAdmin, adminRouter);
 app.use("/calendar", checkAdmin, calendarRouter);
+
+app.use("/kakao", kakaoRouter);
 
 app.get("/favicon.ico", (req, res) => {
   const faviconPath = path.join(__dirname, "public", "images", "favicon.ico");

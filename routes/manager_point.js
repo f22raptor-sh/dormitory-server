@@ -210,6 +210,7 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
           temp["extra_plus_point"] = 0;
           temp["extra_minus_point"] = 0;
           temp["state"] = 0;
+          temp["kakao"] = 0;
           temp2[dataA] = dataA;
           updates[dataA] = temp;
           ref2.update(temp2);
