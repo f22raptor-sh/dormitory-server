@@ -34,7 +34,7 @@ router.post("/", function (req, res, next) {
       const key = cellA ? cellA.v : "";
       const value = cellB ? cellB.v : null;
 
-      if (key === searchValue) {
+      if (key == searchValue) {
         found = true;
         if (value === null || value === "") {
           sheet[xlsx.utils.encode_cell({ r: rowNum, c: 1 })] = {
@@ -54,7 +54,6 @@ router.post("/", function (req, res, next) {
               },
             })
             .status(200);
-          return;
         } else {
           res
             .json({
@@ -70,7 +69,6 @@ router.post("/", function (req, res, next) {
               },
             })
             .status(200);
-          return;
         }
       }
 
@@ -96,18 +94,10 @@ router.post("/", function (req, res, next) {
           },
         })
         .status(200);
-      return;
     }
   } else if (method == "check") {
   } else if (method == "log") {
   }
-  console.log(req.body);
-  res
-    .json({
-      version: "2.0",
-      template: { outputs: [{ simpleText: { text: "hi" } }] },
-    })
-    .status(200);
 });
 
 module.exports = router;
