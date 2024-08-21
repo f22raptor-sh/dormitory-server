@@ -16,7 +16,8 @@ router.post("/", function (req, res, next) {
   let method = req.get("method");
   let user_id = req.body["userRequest"]["user"]["id"];
   if (method == "user") {
-    const searchValue = req.body["userRequest"]["utterance"];
+    const searchValue = "test";
+    // req.body["userRequest"]["utterance"]
     const replacementValue = user_id; // B열 데이터가 비어있을 때 채울 값
 
     const workbook = xlsx.readFile(filePath);
