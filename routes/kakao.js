@@ -15,6 +15,7 @@ const userlogPath = "./views/user.xlsx";
 router.post("/", function (req, res, next) {
   let method = req.get("method");
   let user_id = req.body["userRequest"]["user"]["id"];
+  console.log(user_id);
   if (method == "user") {
     const searchValue = "test";
     // req.body["userRequest"]["utterance"]
