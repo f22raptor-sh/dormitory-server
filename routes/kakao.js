@@ -97,7 +97,10 @@ router.post("/", function (req, res, next) {
             outputs: [
               {
                 simpleText: {
-                  text: "다른 학번으로 이미 인증된 상태입니다.",
+                  text:
+                    "다른 학번으로 이미 인증된 상태입니다.\n등록된 학번은" +
+                    input +
+                    "입니다.",
                 },
               },
             ],
