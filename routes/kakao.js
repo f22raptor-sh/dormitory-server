@@ -75,6 +75,12 @@ router.post("/", function (req, res, next) {
   // } else if (method == "log") {
   // }
   console.log(req.body);
+  res
+    .json({
+      version: "2.0",
+      template: { outputs: [{ simpleText: { text: "hi" } }] },
+    })
+    .status(200);
 });
 
 module.exports = router;
