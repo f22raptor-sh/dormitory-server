@@ -15,90 +15,105 @@ const userlogPath = "./views/user.xlsx";
 router.post("/", function (req, res, next) {
   let method = req.get("method");
   let user_id = req.body["userRequest"]["user"]["id"];
-  console.log(req.body["userRequest"]["utterance"]);
-  if (method == "user") {
-    const searchValue = req.body["userRequest"]["utterance"];
-    const replacementValue = user_id; // B열 데이터가 비어있을 때 채울 값
-
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-
-    const data = {};
-    const range = xlsx.utils.decode_range(sheet["!ref"]);
-    let found = false;
-
-    for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
-      const cellA = sheet[xlsx.utils.encode_cell({ r: rowNum, c: 0 })];
-      const cellB = sheet[xlsx.utils.encode_cell({ r: rowNum, c: 1 })];
-
-      const key = cellA ? cellA.v : "";
-      const value = cellB ? cellB.v : null;
-
-      if (key == searchValue) {
-        found = true;
-        if (value === null || value === "") {
-          sheet[xlsx.utils.encode_cell({ r: rowNum, c: 1 })] = {
-            v: replacementValue,
-          };
-          res
-            .json({
-              version: "2.0",
-              template: {
-                outputs: [
-                  {
-                    simpleText: {
-                      text: "인증되었습니다. 정상적으로 서비스를 이용할 수 있습니다.",
-                    },
-                  },
-                ],
-              },
-            })
-            .status(200);
-        } else {
-          res
-            .json({
-              version: "2.0",
-              template: {
-                outputs: [
-                  {
-                    simpleText: {
-                      text: "다른 카카오톡 계정으로 인증된 상태입니다.\n 인증한 계정이 없을 경우 관리자에게 문의해주세요.",
-                    },
-                  },
-                ],
-              },
-            })
-            .status(200);
-        }
-      }
-
-      if (key) {
-        data[key] = value;
-      }
-    }
-
-    if (found) {
-      xlsx.writeFile(filePath, workbook);
-    } else {
-      res
-        .json({
-          version: "2.0",
-          template: {
-            outputs: [
-              {
-                simpleText: {
-                  text: "등록되지 않은 사용자입니다 관리자에게 문의해주시기 바랍니다.",
-                },
-              },
-            ],
+  let std_num = req.body["userRequest"]["utterance"];
+  // if (method == "user") {
+  //   // user_id가 B열에 이미 있는지, std_num이 A에 있고, 그 옆의 B가 비어있는지 확인 후
+  //   // B열에 없고 비어있다면 추가
+  //   // B열에 있고 std_num과 동일하면 이미 등록되었다는 안내
+  //   // B열에 있고 std_num과 다르면 이미 본 계정은 다른 학번으로 등록되었다는 안내
+  // } else if (True) {
+  //   // 여기에는 사용자의 실제 id와 excel에 저장된 id가 일치하는지 확인한다.
+  //   // 일치할 경우 다음을 실행한다.
+  //   if (method == "check") {
+  //     let ref = db.ref("/" + std_num + "/");
+  //     s_ref.once("value", (snapshot) => {
+  //       const std_data = snapshot.val();
+  //       // 이 부분을 챗봇의 응답 형식으로 바꿔야함. 깔끔하게 바꾸는게 좋을 듯
+  //       // if (std_data["state"] == "2") {
+  //       //   res.render("student_layout", {
+  //       //     number: req_name,
+  //       //     name: std_data["name"],
+  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
+  //       //     minus_point:
+  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
+  //       //     state: "퇴사 위험 상태입니다.",
+  //       //     display1: true,
+  //       //     display2: true,
+  //       //     log: std_data["log"],
+  //       //   });
+  //       // } else if (std_data["state"] == "1") {
+  //       //   res.render("student_layout", {
+  //       //     number: req_name,
+  //       //     name: std_data["name"],
+  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
+  //       //     minus_point:
+  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
+  //       //     state: "퇴사 상태입니다.",
+  //       //     display1: false,
+  //       //     display2: true,
+  //       //     log: std_data["log"],
+  //       //   });
+  //       // } else if (std_data["state"] == "3") {
+  //       //   res.render("student_layout", {
+  //       //     number: req_name,
+  //       //     name: std_data["name"],
+  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
+  //       //     minus_point:
+  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
+  //       //     state: "퇴사 대상자입니다.",
+  //       //     display1: true,
+  //       //     display2: true,
+  //       //     log: std_data["log"],
+  //       //   });
+  //       // } else {
+  //       //   res.render("student_layout", {
+  //       //     number: req_name,
+  //       //     name: std_data["name"],
+  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
+  //       //     minus_point:
+  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
+  //       //     state: "",
+  //       //     display1: true,
+  //       //     display2: false,
+  //       //     log: std_data["log"],
+  //       //   });
+  //       // }
+  //     });
+  //   } else if (method == "log") {
+  //     // 위 코드를 참고해서 std_data["log"] 를 편집하면 된다.
+  //   }
+  // } else {
+  //   res
+  //     .json({
+  //       version: "2.0",
+  //       template: {
+  //         outputs: [
+  //           {
+  //             simpleText: {
+  //               text: "이미 다른 계정 또는 다른 사람의 기기에 연결되어있습니다.\n\
+  //               문의는 상담직원 연결로 전환 후 문의해주시기 바랍니다.\n\
+  //               문의 가능 시간은 평일 9시부터 6시까지 입니다.",
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     })
+  //     .status(200);
+  // }
+  res
+    .json({
+      version: "2.0",
+      template: {
+        outputs: [
+          {
+            simpleText: {
+              text: "recive data" + method + "/" + user_id + "/" + std_num,
+            },
           },
-        })
-        .status(200);
-    }
-  } else if (method == "check") {
-  } else if (method == "log") {
-  }
+        ],
+      },
+    })
+    .status(200);
 });
 
 module.exports = router;
