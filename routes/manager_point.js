@@ -165,11 +165,14 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
 
   // 업로드된 파일의 경로
   const filePath = req.file.path;
-
+  const writePath = "./views/user.xlsx";
   // Excel 파일 읽기
   const workbook = xlsx.readFile(filePath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
+
+  const workbook2 = xlsx.utils.book_new();
+  const sheet2 = [];
 
   // 필요한 작업 수행
   const range = xlsx.utils.decode_range(sheet["!ref"]);
@@ -198,7 +201,9 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
         if (cellA && cellB) {
           const dataA = cellA.v; // A열 데이터
           const dataB = cellB.v; // B열 데이터
-
+          sheet2.push([
+            cellA ? cellA.v : "", // A열 데이터
+          ]);
           const temp = {};
           const temp2 = {};
           temp["number"] = dataA;
@@ -216,7 +221,18 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
           ref2.update(temp2);
         }
       }
-      // 모든 데이터 추가가 완료되면 업로드된 파일 삭제 및 응답 전송
+
+      if (fs.existsSync(writePath)) {
+        fs.unlinkSync(writePath);
+      }
+      const newSheet = xlsx.utils.aoa_to_sheet(sheet2);
+      if (workbook2.SheetNames.includes("Sheet1")) {
+        delete workbook2.Sheets["Sheet1"];
+      }
+      xlsx.utils.book_append_sheet(workbook2, newSheet, "Sheet1");
+
+      // 새로운 엑셀 파일로 저장
+      xlsx.writeFile(workbook2, writePath);
       return ref.update(updates);
     })
     .then(() => {
