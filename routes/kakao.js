@@ -15,7 +15,7 @@ const userlogPath = "./views/user.xlsx";
 router.post("/", function (req, res, next) {
   let method = req.get("method");
   console.log(method);
-  console.log(req.body["user"]["id"]);
+  // console.log(req.body["user"]["id"]);
   // if (method == "user") {
   //   const searchValue = "search_key"; // A열에서 찾을 값
   //   const replacementValue = "replacement_value"; // B열 데이터가 비어있을 때 채울 값
