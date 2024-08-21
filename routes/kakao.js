@@ -7,7 +7,7 @@ router.setDb = (database) => {
 };
 
 router.post("/", function (req, res, next) {
-  console.log(req.header);
+  console.log(req.headers);
   console.log(req.body);
   res
     .json({
