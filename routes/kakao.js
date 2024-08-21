@@ -33,10 +33,10 @@ router.post("/", function (req, res, next) {
   for (let i = 0; i < data.length; i++) {
     const [input, id] = data[i];
 
-    if (input === user_input) {
+    if (input == user_input) {
       found = true;
 
-      if (id === user_id) {
+      if (id == user_id) {
         return res
           .json({
             version: "2.0",
