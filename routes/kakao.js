@@ -29,10 +29,10 @@ router.post("/", function (req, res, next) {
   const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
   let found = false;
-
   for (let i = 0; i < data.length; i++) {
     const [input, id] = data[i];
 
+    // user_input이 A열에 있는지 확인
     if (input == user_input) {
       found = true;
 
@@ -44,7 +44,22 @@ router.post("/", function (req, res, next) {
               outputs: [
                 {
                   simpleText: {
-                    text: "이전에 인증한 상태 입니다.",
+                    text: "이전에 인증된 상태 입니다.\n정상적으로 사용하실 수 있습니다.",
+                  },
+                },
+              ],
+            },
+          })
+          .status(200);
+      } else if (id != user_id) {
+        return res
+          .json({
+            version: "2.0",
+            template: {
+              outputs: [
+                {
+                  simpleText: {
+                    text: "다른 계정이 이미 인증된 학번입니다.",
                   },
                 },
               ],
@@ -52,7 +67,7 @@ router.post("/", function (req, res, next) {
           })
           .status(200);
       } else if (!id) {
-        data[i][1] = user_id; // B열이 비어있다면 새로 등록
+        data[i][1] = user_id; // B열이 비어있다면 user_id 등록
         const updatedSheet = xlsx.utils.aoa_to_sheet(data);
         workbook.Sheets[workbook.SheetNames[0]] = updatedSheet;
         xlsx.writeFile(workbook, userlogPath);
@@ -63,22 +78,7 @@ router.post("/", function (req, res, next) {
               outputs: [
                 {
                   simpleText: {
-                    text: "성공적으로 인증되었습니다.",
-                  },
-                },
-              ],
-            },
-          })
-          .status(200);
-      } else {
-        return res
-          .json({
-            version: "2.0",
-            template: {
-              outputs: [
-                {
-                  simpleText: {
-                    text: "다른 학번으로 이미 인증되어있습니다.",
+                    text: "인증되었습니다.\n지금부터 정상적으로 사용할 수 있습니다.",
                   },
                 },
               ],
@@ -86,6 +86,24 @@ router.post("/", function (req, res, next) {
           })
           .status(200);
       }
+    }
+
+    // B열에 user_id가 존재하는데, A열의 input과 user_input이 다를 때
+    if (id == user_id && input != user_input) {
+      return res
+        .json({
+          version: "2.0",
+          template: {
+            outputs: [
+              {
+                simpleText: {
+                  text: "다른 학번으로 이미 인증된 상태입니다.",
+                },
+              },
+            ],
+          },
+        })
+        .status(200);
     }
   }
 
@@ -97,7 +115,7 @@ router.post("/", function (req, res, next) {
           outputs: [
             {
               simpleText: {
-                text: "존재하지 않는 학번입니다. 다시 확인해주세요.",
+                text: "존재하지 않는 학번입니다.",
               },
             },
           ],
