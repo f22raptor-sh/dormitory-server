@@ -7,7 +7,11 @@ router.setDb = (database) => {
 };
 
 router.post("/", function (req, res, next) {
-  console.log(req.headers);
+  let method = req.get("method");
+  if (method == "user") {
+  } else if (method == "check") {
+  } else if (method == "log") {
+  }
   console.log(req.body);
   res
     .json({
