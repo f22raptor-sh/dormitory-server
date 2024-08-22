@@ -278,10 +278,12 @@ router.post("/", function (req, res, next) {
               .status(200);
           }
         });
+        console.log(id);
       }
     }
 
     // B열에 user_id가 없을 때
+    console.log(user_id);
     return res
       .json({
         version: "2.0",
