@@ -282,9 +282,8 @@ router.post("/resetpw", function (req, res, next) {
     // 수정된 데이터를 시트로 변환
     const newSheet = xlsx.utils.aoa_to_sheet(data);
     workbook.Sheets[sheetName] = newSheet;
-
     // 수정된 엑셀 파일 저장
-    xlsx.writeFile(userlogPath, workbook);
+    xlsx.writeFile(workbook, userlogPath);
     console.log("good");
     res.status(200).json({ message: "Good" });
   } else {
