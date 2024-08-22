@@ -109,7 +109,7 @@
           비밀번호 수정하기
         </button>
         <button class="pw_button pointer" onclick="search_pw()">
-          학생 비밀번호 초기화
+          학생 등록 초기화
         </button>
       </div>
     </div>
@@ -188,7 +188,9 @@
     }
 
     async function search_pw() {
-      const stdnum = prompt("비밀번호를 초기화할 학생의 학번을 입력해주세요");
+      const stdnum = prompt(
+        "인증 정보를 초기화 할 학생의 학번을 입력해주세요."
+      );
       if (stdnum) {
         try {
           const response = await fetch("/point/resetpw", {
@@ -204,7 +206,7 @@
           if (response.ok) {
             const data = await response.json();
             if (data.message != "Good") {
-              alert(stdnum + " 비밀번호가 초기화 되었습니다.");
+              alert(stdnum + " 학생 인증 정보가 초기화되었습니다.");
             } else {
               alert("서버 오류.\n관리자에게 문의해주세요.");
             }

@@ -13,6 +13,7 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 const upload = multer({ dest: "uploads/" });
+const userlogPath = "./views/user.xlsx";
 
 let db; // db 객체를 받기 위한 변수 선언
 
@@ -215,7 +216,6 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
           temp["extra_plus_point"] = 0;
           temp["extra_minus_point"] = 0;
           temp["state"] = 0;
-          temp["kakao"] = 0;
           temp2[dataA] = dataA;
           updates[dataA] = temp;
           ref2.update(temp2);
@@ -255,20 +255,46 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
 
 router.post("/resetpw", function (req, res, next) {
   const std_num = req.body.name;
-  let ref = db.ref("/" + std_num + "/");
-  let updates = {};
-  ref.once("value", (snapshot) => {
-    updates["password"] = "bsis!";
-    ref
-      .update(updates)
-      .then(() => {
-        res.status(200).json("Good");
-      })
-      .catch((error) => {
-        res.status(400);
-        console.error("데이터 처리 오류:", error);
-      });
-  });
+
+  if (!fs.existsSync(userlogPath)) {
+    return res.status(400).json({ error: "File not found" });
+  }
+
+  try {
+    // 엑셀 파일 읽기
+    const workbook = xlsx.readFile(userlogPath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // 시트의 모든 데이터를 JSON 형태로 변환
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+
+    // 데이터 업데이트
+    let updated = false;
+    for (let i = 1; i < data.length; i++) {
+      // 0번째 인덱스는 헤더라고 가정
+      if (data[i][0] === std_num) {
+        data[i][1] = ""; // B열 데이터 제거
+        updated = true;
+        break;
+      }
+    }
+
+    if (updated) {
+      // 수정된 데이터를 시트로 변환
+      const newSheet = xlsx.utils.aoa_to_sheet(data);
+      workbook.Sheets[sheetName] = newSheet;
+
+      // 수정된 엑셀 파일 저장
+      xlsx.writeFile(userlogPath, workbook);
+
+      res.status(200).json({ message: "Good" });
+    } else {
+      res.status(400).json({ error: "std_num not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Error processing file" });
+  }
 });
 
 module.exports = router;
