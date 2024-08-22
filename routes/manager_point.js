@@ -271,7 +271,7 @@ router.post("/resetpw", function (req, res, next) {
   let updated = false;
   for (let i = 1; i < data.length; i++) {
     // 0번째 인덱스는 헤더라고 가정
-    if (data[i][0] === std_num) {
+    if (data[i][0] == std_num) {
       data[i][1] = ""; // B열 데이터 제거
       updated = true;
       break;
