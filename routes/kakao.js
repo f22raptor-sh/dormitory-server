@@ -127,10 +127,12 @@ router.post("/", function (req, res, next) {
         .status(200);
     }
   } else if (method === "check" || method === "log") {
+    let check_id = false;
     for (let i = 0; i < data.length; i++) {
       const [input, id] = data[i];
 
-      if (id == user_id) {
+      if (id == user_id && !check_id) {
+        check_id = true;
         const std_num = input;
         let ref = db.ref("/" + std_num + "/");
         ref.once("value", (snapshot) => {
@@ -278,26 +280,26 @@ router.post("/", function (req, res, next) {
               .status(200);
           }
         });
-        console.log(id);
       }
     }
 
     // B열에 user_id가 없을 때
-    console.log(user_id);
-    return res
-      .json({
-        version: "2.0",
-        template: {
-          outputs: [
-            {
-              simpleText: {
-                text: "등록되지 않은 사용자 입니다.\n학번을 입력해주세요.",
+    if (!check_id) {
+      return res
+        .json({
+          version: "2.0",
+          template: {
+            outputs: [
+              {
+                simpleText: {
+                  text: "등록되지 않은 사용자 입니다.\n학번을 입력해주세요.",
+                },
               },
-            },
-          ],
-        },
-      })
-      .status(200);
+            ],
+          },
+        })
+        .status(200);
+    }
   } else {
     return res
       .json({
