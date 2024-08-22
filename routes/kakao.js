@@ -60,7 +60,7 @@ router.post("/", function (req, res, next) {
                 outputs: [
                   {
                     simpleText: {
-                      text: "다른 계정이 이미 인증된 학번입니다.",
+                      text: "해당 학번으로 인증된 계정이 있습니다. \n본인 학번으로 다른 사람이 인증했다면,\n상담직원과 채팅으로 전환한 후 문의해주시기 바랍니다.",
                     },
                   },
                 ],
@@ -100,7 +100,7 @@ router.post("/", function (req, res, next) {
                     text:
                       "다른 학번으로 이미 인증된 상태입니다.\n등록된 학번은 " +
                       input +
-                      "입니다.",
+                      '입니다.\n 다른 학번으로 인증하기 위해서 인증을 해제하고 싶으시다면, "인증 해제"를 입력해주세요.',
                   },
                 },
               ],
@@ -309,6 +309,50 @@ router.post("/", function (req, res, next) {
               {
                 simpleText: {
                   text: "등록되지 않은 사용자 입니다.\n학번을 입력해주세요.",
+                },
+              },
+            ],
+          },
+        })
+        .status(200);
+    }
+  } else if (method === "delete") {
+    let updated = false;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][1] == user_id) {
+        data[i][1] = "";
+        updated = true;
+        break;
+      }
+    }
+
+    if (updated) {
+      const newSheet = xlsx.utils.aoa_to_sheet(data);
+      workbook.Sheets[workbook.SheetNames[0]] = newSheet;
+      xlsx.writeFile(workbook, userlogPath);
+      return res
+        .json({
+          version: "2.0",
+          template: {
+            outputs: [
+              {
+                simpleText: {
+                  text: "계정 인증이 해제되었습니다. \n 다른 계정으로 인증하려면 학번을 입력해주세요.",
+                },
+              },
+            ],
+          },
+        })
+        .status(200);
+    } else {
+      return res
+        .json({
+          version: "2.0",
+          template: {
+            outputs: [
+              {
+                simpleText: {
+                  text: "이 계정으로 등록된 학번이 없습니다.\n학번을 입력해서 인증해주세요.",
                 },
               },
             ],
