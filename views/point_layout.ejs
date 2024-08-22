@@ -169,8 +169,6 @@
               if (response.ok) {
                 const data = await response.json();
                 if (data.message != "Good") {
-                  location.reload();
-                } else {
                   alert("서버 오류.\n관리자에게 문의해주세요.");
                 }
               } else {

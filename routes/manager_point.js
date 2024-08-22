@@ -284,13 +284,10 @@ router.post("/resetpw", function (req, res, next) {
     workbook.Sheets[sheetName] = newSheet;
     // 수정된 엑셀 파일 저장
     xlsx.writeFile(workbook, userlogPath);
-    console.log("good");
-    res.status(200).json({ message: "Good" });
+    return res.status(200).json({ message: "Good" });
   } else {
-    console.log("no stdnum");
-    res.status(400).json({ error: "std_num not found" });
+    return res.status(400).json({ error: "std_num not found" });
   }
-  console.log("check1");
 });
 
 router.use(function (err, req, res, next) {
