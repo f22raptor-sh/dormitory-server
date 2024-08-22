@@ -203,7 +203,7 @@
 
           if (response.ok) {
             const data = await response.json();
-            if (data.message != "Good") {
+            if (data.message == "Good") {
               alert(stdnum + " 학생 인증 정보가 초기화되었습니다.");
             } else {
               alert("서버 오류.\n관리자에게 문의해주세요.");
