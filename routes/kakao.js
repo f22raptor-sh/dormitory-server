@@ -16,7 +16,6 @@ router.post("/", function (req, res, next) {
   let user_id = req.body["userRequest"]["user"]["id"];
   let user_input = req.body["userRequest"]["utterance"];
 
-  // if (method == "user") {
   if (!fs.existsSync(userlogPath)) {
     console.log("No Log file on path " + userlogPath);
     return res
@@ -29,48 +28,68 @@ router.post("/", function (req, res, next) {
   const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
   let found = false;
-  for (let i = 0; i < data.length; i++) {
-    const [input, id] = data[i];
 
-    // user_input이 A열에 있는지 확인
-    if (input == user_input) {
-      found = true;
+  if (method === "user") {
+    // method가 'user'인 경우의 처리
+    for (let i = 0; i < data.length; i++) {
+      const [input, id] = data[i];
 
-      if (id == user_id) {
-        return res
-          .json({
-            version: "2.0",
-            template: {
-              outputs: [
-                {
-                  simpleText: {
-                    text: "이전에 인증된 상태 입니다.\n정상적으로 사용하실 수 있습니다.",
+      if (input == user_input) {
+        found = true;
+
+        if (id == user_id) {
+          return res
+            .json({
+              version: "2.0",
+              template: {
+                outputs: [
+                  {
+                    simpleText: {
+                      text: "이전에 인증된 상태 입니다.\n정상적으로 사용하실 수 있습니다.",
+                    },
                   },
-                },
-              ],
-            },
-          })
-          .status(200);
-      } else if (id != user_id) {
-        return res
-          .json({
-            version: "2.0",
-            template: {
-              outputs: [
-                {
-                  simpleText: {
-                    text: "다른 계정이 이미 인증된 학번입니다.",
+                ],
+              },
+            })
+            .status(200);
+        } else if (id != user_id) {
+          return res
+            .json({
+              version: "2.0",
+              template: {
+                outputs: [
+                  {
+                    simpleText: {
+                      text: "다른 계정이 이미 인증된 학번입니다.",
+                    },
                   },
-                },
-              ],
-            },
-          })
-          .status(200);
-      } else if (!id) {
-        data[i][1] = user_id; // B열이 비어있다면 user_id 등록
-        const updatedSheet = xlsx.utils.aoa_to_sheet(data);
-        workbook.Sheets[workbook.SheetNames[0]] = updatedSheet;
-        xlsx.writeFile(workbook, userlogPath);
+                ],
+              },
+            })
+            .status(200);
+        } else if (!id) {
+          data[i][1] = user_id; // B열이 비어있다면 user_id 등록
+          const updatedSheet = xlsx.utils.aoa_to_sheet(data);
+          workbook.Sheets[workbook.SheetNames[0]] = updatedSheet;
+          xlsx.writeFile(workbook, userlogPath);
+          return res
+            .json({
+              version: "2.0",
+              template: {
+                outputs: [
+                  {
+                    simpleText: {
+                      text: "인증되었습니다.\n지금부터 정상적으로 사용할 수 있습니다.",
+                    },
+                  },
+                ],
+              },
+            })
+            .status(200);
+        }
+      }
+
+      if (id == user_id && input != user_input) {
         return res
           .json({
             version: "2.0",
@@ -78,7 +97,10 @@ router.post("/", function (req, res, next) {
               outputs: [
                 {
                   simpleText: {
-                    text: "인증되었습니다.\n지금부터 정상적으로 사용할 수 있습니다.",
+                    text:
+                      "다른 학번으로 이미 인증된 상태입니다.\n등록된 학번은 " +
+                      input +
+                      "입니다.",
                   },
                 },
               ],
@@ -88,8 +110,7 @@ router.post("/", function (req, res, next) {
       }
     }
 
-    // B열에 user_id가 존재하는데, A열의 input과 user_input이 다를 때
-    if (id == user_id && input != user_input) {
+    if (!found) {
       return res
         .json({
           version: "2.0",
@@ -97,10 +118,7 @@ router.post("/", function (req, res, next) {
             outputs: [
               {
                 simpleText: {
-                  text:
-                    "다른 학번으로 이미 인증된 상태입니다.\n등록된 학번은" +
-                    input +
-                    "입니다.",
+                  text: "존재하지 않는 학번입니다.",
                 },
               },
             ],
@@ -108,9 +126,162 @@ router.post("/", function (req, res, next) {
         })
         .status(200);
     }
-  }
+  } else if (method === "check" || method === "log") {
+    for (let i = 0; i < data.length; i++) {
+      const [input, id] = data[i];
 
-  if (!found) {
+      if (id == user_id) {
+        const std_num = input;
+        let ref = db.ref("/" + std_num + "/");
+        ref.once("value", (snapshot) => {
+          const std_data = snapshot.val();
+          if (method == "check") {
+            if (std_data["state"] == "2") {
+              return res
+                .json({
+                  version: "2.0",
+                  template: {
+                    outputs: [
+                      {
+                        simpleText: {
+                          text:
+                            std_num +
+                            " " +
+                            std_data["name"] +
+                            "\n상점 : " +
+                            String(
+                              std_data["plus_point"] +
+                                std_data["extra_plus_point"]
+                            ) +
+                            "\
+                          \n벌점 : " +
+                            String(
+                              std_data["minus_point"] +
+                                std_data["extra_minus_point"]
+                            ) +
+                            "\n퇴사 위험 상태입니다.",
+                        },
+                      },
+                    ],
+                  },
+                })
+                .status(200);
+            } else if (std_data["state"] == "1") {
+              return res
+                .json({
+                  version: "2.0",
+                  template: {
+                    outputs: [
+                      {
+                        simpleText: {
+                          text:
+                            std_num +
+                            " " +
+                            std_data["name"] +
+                            "\n상점 : " +
+                            String(
+                              std_data["plus_point"] +
+                                std_data["extra_plus_point"]
+                            ) +
+                            "\
+                          \n벌점 : " +
+                            String(
+                              std_data["minus_point"] +
+                                std_data["extra_minus_point"]
+                            ) +
+                            "\n퇴사 상태입니다.",
+                        },
+                      },
+                    ],
+                  },
+                })
+                .status(200);
+            } else if (std_data["state"] == "3") {
+              return res
+                .json({
+                  version: "2.0",
+                  template: {
+                    outputs: [
+                      {
+                        simpleText: {
+                          text:
+                            std_num +
+                            " " +
+                            std_data["name"] +
+                            "\n상점 : " +
+                            String(
+                              std_data["plus_point"] +
+                                std_data["extra_plus_point"]
+                            ) +
+                            "\
+                          \n벌점 : " +
+                            String(
+                              std_data["minus_point"] +
+                                std_data["extra_minus_point"]
+                            ) +
+                            "\n퇴사 대상자 입니다.",
+                        },
+                      },
+                    ],
+                  },
+                })
+                .status(200);
+            } else {
+              return res
+                .json({
+                  version: "2.0",
+                  template: {
+                    outputs: [
+                      {
+                        simpleText: {
+                          text:
+                            std_num +
+                            " " +
+                            std_data["name"] +
+                            "\n상점 : " +
+                            String(
+                              std_data["plus_point"] +
+                                std_data["extra_plus_point"]
+                            ) +
+                            "\
+                          \n벌점 : " +
+                            String(
+                              std_data["minus_point"] +
+                                std_data["extra_minus_point"]
+                            ),
+                        },
+                      },
+                    ],
+                  },
+                })
+                .status(200);
+            }
+          } else if (method === "log") {
+            return res
+              .json({
+                version: "2.0",
+                template: {
+                  outputs: [
+                    {
+                      simpleText: {
+                        text:
+                          std_num +
+                          " " +
+                          std_data["name"] +
+                          "\n 상벌점 기록은 다음과 같습니다.\n" +
+                          std_data["log"],
+                      },
+                    },
+                  ],
+                },
+              })
+              .status(200);
+          }
+        });
+      }
+    }
+
+    // B열에 user_id가 없을 때
     return res
       .json({
         version: "2.0",
@@ -118,7 +289,22 @@ router.post("/", function (req, res, next) {
           outputs: [
             {
               simpleText: {
-                text: "존재하지 않는 학번입니다.",
+                text: "등록되지 않은 사용자 입니다.\n학번을 입력해주세요.",
+              },
+            },
+          ],
+        },
+      })
+      .status(200);
+  } else {
+    return res
+      .json({
+        version: "2.0",
+        template: {
+          outputs: [
+            {
+              simpleText: {
+                text: "오류",
               },
             },
           ],
@@ -126,85 +312,6 @@ router.post("/", function (req, res, next) {
       })
       .status(200);
   }
-  // } else if (True) {
-  //   // 여기에는 사용자의 실제 id와 excel에 저장된 id가 일치하는지 확인한다.
-  //   // 일치할 경우 다음을 실행한다.
-  //   if (method == "check") {
-  //     let ref = db.ref("/" + user_input + "/");
-  //     s_ref.once("value", (snapshot) => {
-  //       const std_data = snapshot.val();
-  //       // 이 부분을 챗봇의 응답 형식으로 바꿔야함. 깔끔하게 바꾸는게 좋을 듯
-  //       // if (std_data["state"] == "2") {
-  //       //   res.render("student_layout", {
-  //       //     number: req_name,
-  //       //     name: std_data["name"],
-  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
-  //       //     minus_point:
-  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
-  //       //     state: "퇴사 위험 상태입니다.",
-  //       //     display1: true,
-  //       //     display2: true,
-  //       //     log: std_data["log"],
-  //       //   });
-  //       // } else if (std_data["state"] == "1") {
-  //       //   res.render("student_layout", {
-  //       //     number: req_name,
-  //       //     name: std_data["name"],
-  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
-  //       //     minus_point:
-  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
-  //       //     state: "퇴사 상태입니다.",
-  //       //     display1: false,
-  //       //     display2: true,
-  //       //     log: std_data["log"],
-  //       //   });
-  //       // } else if (std_data["state"] == "3") {
-  //       //   res.render("student_layout", {
-  //       //     number: req_name,
-  //       //     name: std_data["name"],
-  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
-  //       //     minus_point:
-  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
-  //       //     state: "퇴사 대상자입니다.",
-  //       //     display1: true,
-  //       //     display2: true,
-  //       //     log: std_data["log"],
-  //       //   });
-  //       // } else {
-  //       //   res.render("student_layout", {
-  //       //     number: req_name,
-  //       //     name: std_data["name"],
-  //       //     plus_point: std_data["plus_point"] + std_data["extra_plus_point"],
-  //       //     minus_point:
-  //       //       std_data["minus_point"] + std_data["extra_minus_point"],
-  //       //     state: "",
-  //       //     display1: true,
-  //       //     display2: false,
-  //       //     log: std_data["log"],
-  //       //   });
-  //       // }
-  //     });
-  //   } else if (method == "log") {
-  //     // 위 코드를 참고해서 std_data["log"] 를 편집하면 된다.
-  //   }
-  // } else {
-  //   res
-  //     .json({
-  //       version: "2.0",
-  //       template: {
-  //         outputs: [
-  //           {
-  //             simpleText: {
-  //               text: "이미 다른 계정 또는 다른 사람의 기기에 연결되어있습니다.\n\
-  //               문의는 상담직원 연결로 전환 후 문의해주시기 바랍니다.\n\
-  //               문의 가능 시간은 평일 9시부터 6시까지 입니다.",
-  //             },
-  //           },
-  //         ],
-  //       },
-  //     })
-  //     .status(200);
-  // }
 });
 
 module.exports = router;
