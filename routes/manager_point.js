@@ -259,25 +259,13 @@ router.post("/resetpw", function (req, res, next) {
   if (!fs.existsSync(userlogPath)) {
     return res.status(400).json({ error: "File not found" });
   }
-
   // 엑셀 파일 읽기
-  try {
-    // 엑셀 파일 읽기
-    workbook = xlsx.readFile(userlogPath);
-  } catch (err) {
-    console.error("Error reading Excel file:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
+  const workbook = xlsx.readFile(userlogPath);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
 
   // 시트의 모든 데이터를 JSON 형태로 변환
-  try {
-    data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-  } catch (err) {
-    console.error("Error converting sheet to JSON:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
+  const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
   // 데이터 업데이트
   let updated = false;
@@ -296,18 +284,7 @@ router.post("/resetpw", function (req, res, next) {
     workbook.Sheets[sheetName] = newSheet;
 
     // 수정된 엑셀 파일 저장
-    try {
-      // 파일 경로가 문자열인지 확인
-      if (typeof userlogPath !== "string") {
-        throw new TypeError("File path should be a string");
-      }
-
-      // 수정된 엑셀 파일 저장
-      xlsx.writeFile(userlogPath, workbook);
-    } catch (err) {
-      console.error("Error writing Excel file:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+    xlsx.writeFile(userlogPath, workbook);
     console.log("good");
     res.status(200).json({ message: "Good" });
   } else {
