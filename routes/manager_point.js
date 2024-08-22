@@ -259,45 +259,39 @@ router.post("/resetpw", function (req, res, next) {
   if (!fs.existsSync(userlogPath)) {
     return res.status(400).json({ error: "File not found" });
   }
+  // 엑셀 파일 읽기
+  const workbook = xlsx.readFile(userlogPath);
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
 
-  try {
-    // 엑셀 파일 읽기
-    const workbook = xlsx.readFile(userlogPath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
+  // 시트의 모든 데이터를 JSON 형태로 변환
+  const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
-    // 시트의 모든 데이터를 JSON 형태로 변환
-    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-
-    // 데이터 업데이트
-    let updated = false;
-    for (let i = 1; i < data.length; i++) {
-      // 0번째 인덱스는 헤더라고 가정
-      if (data[i][0] === std_num) {
-        data[i][1] = ""; // B열 데이터 제거
-        updated = true;
-        break;
-      }
+  // 데이터 업데이트
+  let updated = false;
+  for (let i = 1; i < data.length; i++) {
+    // 0번째 인덱스는 헤더라고 가정
+    if (data[i][0] === std_num) {
+      data[i][1] = ""; // B열 데이터 제거
+      updated = true;
+      break;
     }
-
-    if (updated) {
-      // 수정된 데이터를 시트로 변환
-      const newSheet = xlsx.utils.aoa_to_sheet(data);
-      workbook.Sheets[sheetName] = newSheet;
-
-      // 수정된 엑셀 파일 저장
-      xlsx.writeFile(userlogPath, workbook);
-      console.log("good");
-      res.status(200).json({ message: "Good" });
-    } else {
-      console.log("no stdnum");
-      res.status(400).json({ error: "std_num not found" });
-    }
-    console.log("check");
-  } catch (error) {
-    console.log("err");
-    res.status(400).json({ error: "Error processing file" });
   }
+
+  if (updated) {
+    // 수정된 데이터를 시트로 변환
+    const newSheet = xlsx.utils.aoa_to_sheet(data);
+    workbook.Sheets[sheetName] = newSheet;
+
+    // 수정된 엑셀 파일 저장
+    xlsx.writeFile(userlogPath, workbook);
+    console.log("good");
+    res.status(200).json({ message: "Good" });
+  } else {
+    console.log("no stdnum");
+    res.status(400).json({ error: "std_num not found" });
+  }
+  console.log("check1");
 });
 
 module.exports = router;
