@@ -161,6 +161,8 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
+                            "마지막 업데이트 : " +
+                            Object.keys(log)[0] +
                             "\n퇴사 위험 상태입니다.",
                         },
                       },
@@ -191,6 +193,8 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
+                            "마지막 업데이트 : " +
+                            Object.keys(log)[0] +
                             "\n퇴사 상태입니다.",
                         },
                       },
@@ -221,6 +225,8 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
+                            "마지막 업데이트 : " +
+                            Object.keys(log)[0] +
                             "\n퇴사 대상자 입니다.",
                         },
                       },
@@ -250,7 +256,9 @@ router.post("/", function (req, res, next) {
                             String(
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
-                            ),
+                            ) +
+                            "마지막 업데이트 : " +
+                            Object.keys(log)[0],
                         },
                       },
                     ],
@@ -259,6 +267,12 @@ router.post("/", function (req, res, next) {
                 .status(200);
             }
           } else if (method === "log") {
+            const lines = [];
+            for (const [timestamp, content] of Object.entries(
+              std_data["log"]
+            )) {
+              lines.push(`${timestamp} - ${content}`);
+            }
             return res
               .json({
                 version: "2.0",
@@ -271,7 +285,9 @@ router.post("/", function (req, res, next) {
                           " " +
                           std_data["name"] +
                           "\n 상벌점 기록은 다음과 같습니다.\n" +
-                          std_data["log"],
+                          lines.join("\n") +
+                          "마지막 업데이트 : " +
+                          Object.keys(log)[0],
                       },
                     },
                   ],
