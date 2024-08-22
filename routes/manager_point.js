@@ -296,7 +296,18 @@ router.post("/resetpw", function (req, res, next) {
     workbook.Sheets[sheetName] = newSheet;
 
     // 수정된 엑셀 파일 저장
-    xlsx.writeFile(userlogPath, workbook);
+    try {
+      // 파일 경로가 문자열인지 확인
+      if (typeof userlogPath !== "string") {
+        throw new TypeError("File path should be a string");
+      }
+
+      // 수정된 엑셀 파일 저장
+      xlsx.writeFile(userlogPath, workbook);
+    } catch (err) {
+      console.error("Error writing Excel file:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
     console.log("good");
     res.status(200).json({ message: "Good" });
   } else {
