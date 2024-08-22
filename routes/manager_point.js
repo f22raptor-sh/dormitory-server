@@ -287,12 +287,15 @@ router.post("/resetpw", function (req, res, next) {
 
       // 수정된 엑셀 파일 저장
       xlsx.writeFile(userlogPath, workbook);
-
+      console.log("good");
       res.status(200).json({ message: "Good" });
     } else {
+      console.log("no stdnum");
       res.status(400).json({ error: "std_num not found" });
     }
+    console.log("check");
   } catch (error) {
+    console.log("err");
     res.status(400).json({ error: "Error processing file" });
   }
 });
