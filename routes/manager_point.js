@@ -259,13 +259,25 @@ router.post("/resetpw", function (req, res, next) {
   if (!fs.existsSync(userlogPath)) {
     return res.status(400).json({ error: "File not found" });
   }
+
   // 엑셀 파일 읽기
-  const workbook = xlsx.readFile(userlogPath);
+  try {
+    // 엑셀 파일 읽기
+    workbook = xlsx.readFile(userlogPath);
+  } catch (err) {
+    console.error("Error reading Excel file:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
 
   // 시트의 모든 데이터를 JSON 형태로 변환
-  const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+  try {
+    data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+  } catch (err) {
+    console.error("Error converting sheet to JSON:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 
   // 데이터 업데이트
   let updated = false;
