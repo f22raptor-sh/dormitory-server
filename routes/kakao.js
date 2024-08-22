@@ -161,7 +161,7 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
-                            "마지막 업데이트 : " +
+                            "\n마지막 업데이트 : " +
                             Object.keys(std_data["log"])[0] +
                             "\n퇴사 위험 상태입니다.",
                         },
@@ -193,7 +193,7 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
-                            "마지막 업데이트 : " +
+                            "\n마지막 업데이트 : " +
                             Object.keys(std_data["log"])[0] +
                             "\n퇴사 상태입니다.",
                         },
@@ -225,7 +225,7 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
-                            "마지막 업데이트 : " +
+                            "\n마지막 업데이트 : " +
                             Object.keys(std_data["log"])[0] +
                             "\n퇴사 대상자 입니다.",
                         },
@@ -257,7 +257,7 @@ router.post("/", function (req, res, next) {
                               std_data["minus_point"] +
                                 std_data["extra_minus_point"]
                             ) +
-                            "마지막 업데이트 : " +
+                            "\n마지막 업데이트 : " +
                             Object.keys(std_data["log"])[0],
                         },
                       },
@@ -286,7 +286,7 @@ router.post("/", function (req, res, next) {
                           std_data["name"] +
                           "\n 상벌점 기록은 다음과 같습니다.\n" +
                           lines.join("\n") +
-                          "마지막 업데이트 : " +
+                          "\n마지막 업데이트 : " +
                           Object.keys(std_data["log"])[0],
                       },
                     },
