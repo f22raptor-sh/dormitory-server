@@ -52,21 +52,6 @@ router.post("/", function (req, res, next) {
               },
             })
             .status(200);
-        } else if (id != user_id) {
-          return res
-            .json({
-              version: "2.0",
-              template: {
-                outputs: [
-                  {
-                    simpleText: {
-                      text: "해당 학번으로 인증된 계정이 있습니다. \n본인 학번으로 다른 사람이 인증했다면,\n상담직원과 채팅으로 전환한 후 문의해주시기 바랍니다.",
-                    },
-                  },
-                ],
-              },
-            })
-            .status(200);
         } else if (!id) {
           data[i][1] = user_id; // B열이 비어있다면 user_id 등록
           const updatedSheet = xlsx.utils.aoa_to_sheet(data);
@@ -80,6 +65,21 @@ router.post("/", function (req, res, next) {
                   {
                     simpleText: {
                       text: "인증되었습니다.\n지금부터 정상적으로 사용할 수 있습니다.",
+                    },
+                  },
+                ],
+              },
+            })
+            .status(200);
+        } else if (id != user_id) {
+          return res
+            .json({
+              version: "2.0",
+              template: {
+                outputs: [
+                  {
+                    simpleText: {
+                      text: "해당 학번으로 인증된 계정이 있습니다. \n본인 학번으로 다른 사람이 인증했다면,\n상담직원과 채팅으로 전환한 후 문의해주시기 바랍니다.",
                     },
                   },
                 ],
