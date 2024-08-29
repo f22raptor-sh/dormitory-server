@@ -38,6 +38,7 @@ router.post("/", function (req, res, next) {
 const processs = [];
 let updates = {};
 
+//메인 화면에서 상벌점 주는거
 router.post("/point", function (req, res, next) {
   let ref = db.ref("/manager");
 
@@ -160,7 +161,6 @@ router.post("/point", function (req, res, next) {
 });
 
 //1에서 업로드한 excel 파일 처리
-
 router.post("/upload", upload.single("excelFile"), (req, res) => {
   if (!req.file) {
     res.status(400).send("파일이 전송되지 않았습니다.");
@@ -258,6 +258,7 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
   // 처리가 완료되면 업로드된 파일 삭제 등 추가 작업 수행
 });
 
+// 학생 인증 정보 제거
 router.post("/resetpw", function (req, res, next) {
   const std_num = req.body.name;
 
@@ -295,6 +296,7 @@ router.post("/resetpw", function (req, res, next) {
   }
 });
 
+// 학기 초기화
 router.post("/resetterm", function (req, res, next) {
   let s_ref = db.ref("/");
   updates = {};

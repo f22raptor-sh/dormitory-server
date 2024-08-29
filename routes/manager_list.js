@@ -179,12 +179,12 @@ router.post("/change", function (req, res, next) {
         const amount = req.body.amount;
         updates["extra_plus_point"] =
           snapshot.val()["extra_plus_point"] + amount;
-        updates[`log/${day}`] = amount + "점 : 추가 상점";
+        updates[`log/${day}`] = "+ " + amount + "점 : 추가 상점";
       } else if (std_method == "extra_minus") {
         const amount = req.body.amount;
         updates["extra_minus_point"] =
           snapshot.val()["extra_minus_point"] + amount;
-        updates[`log/${day}`] = amount + "점 : 추가 벌점";
+        updates[`log/${day}`] = "+ " + amount + "점 : 추가 벌점";
       } else if (std_method == "out") {
         const end_date = new Date(req.body.end_day);
         const nextDay = new Date(end_date.getTime());
@@ -230,6 +230,8 @@ router.post("/pwchange", function (req, res, next) {
 router.post("/calendar", function (req, res, next) {
   res.render("calendar");
 });
+
+// 학생 이름 클릭시 로그 나옴. 그거
 router.post("/log", function (req, res, next) {
   const std_num = req.body.std_number;
   const ref = db.ref("/" + `${std_num}/`);
