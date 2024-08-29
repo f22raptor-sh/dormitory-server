@@ -325,16 +325,19 @@ router.post("/resetterm", function (req, res, next) {
       });
       processs.push(temp_process);
     }
-    return s_ref
-      .update(updates)
-      .then(() => {
-        res.status(200).json({ message: "Good" });
-      })
-      .catch((error) => {
-        res.status(200).json({
-          message: `오류가 발생했습니다. manager.js ${error}`,
+    Promise.all(processs).then(() => {
+      let a_ref = db.ref("/");
+      return a_ref
+        .update(updates)
+        .then(() => {
+          res.status(200).json({ message: "Good" });
+        })
+        .catch((error) => {
+          res.status(500).json({
+            message: `오류가 발생했습니다. manager.js ${error}`,
+          });
         });
-      });
+    });
   });
 });
 
