@@ -299,7 +299,7 @@ router.post("/", function (req, res, next) {
                           "\n 상벌점 기록은 다음과 같습니다.\n" +
                           lines.join("\n") +
                           "\n마지막 업데이트 : " +
-                          keys[0],
+                          keys[keys.length - 1],
                       },
                     },
                   ],
