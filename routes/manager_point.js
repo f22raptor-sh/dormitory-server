@@ -37,6 +37,7 @@ router.post("/", function (req, res, next) {
 //1 에서 form의 데이터를 기반으로 상벌점 입력
 const processs = [];
 let updates = {};
+
 router.post("/point", function (req, res, next) {
   let ref = db.ref("/manager");
 
@@ -305,7 +306,9 @@ router.post("/resetterm", function (req, res, next) {
   const minutes = String(today.getMinutes()).padStart(2, "0");
   const seconds = String(today.getSeconds()).padStart(2, "0");
   const day = `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
+
   s_ref.once("value").then((snapshot) => {
+    console.log("check");
     for (std_number in snapshot.val()) {
       let s_ref = db.ref("/" + std_number + "/");
       const temp_process = s_ref.once("value").then((snapshot) => {
@@ -317,6 +320,8 @@ router.post("/resetterm", function (req, res, next) {
         updatedValue =
           currentPlus - currentMinus + excurrentPlus - excurrentMinus;
         if (updatedValue > 0) {
+          console.log(updateValue);
+          console.log(std_number);
           updates["/" + std_number + "/extra_minus_point"] =
             snapshot.val()["extra_minus_point"] + updatedValue;
           updates["/" + std_number + `/log/${day}`] =
