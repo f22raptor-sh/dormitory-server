@@ -306,16 +306,13 @@ router.post("/resetterm", function (req, res, next) {
   const minutes = String(today.getMinutes()).padStart(2, "0");
   const seconds = String(today.getSeconds()).padStart(2, "0");
   const day = `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
-
   s_ref.once("value").then((snapshot) => {
-    console.log("check");
     for (std_number in snapshot.val()) {
-      let s_ref = db.ref("/" + std_number + "/");
-      const temp_process = s_ref.once("value").then((snapshot) => {
-        const currentPlus = snapshot.val()["plus_point"];
-        const currentMinus = snapshot.val()["minus_point"];
-        const excurrentPlus = snapshot.val()["extra_plus_point"];
-        const excurrentMinus = snapshot.val()["extra_minus_point"];
+      if (std_number != "manager") {
+        const currentPlus = snapshot.val()[std_number]["plus_point"];
+        const currentMinus = snapshot.val()[std_number]["minus_point"];
+        const excurrentPlus = snapshot.val()[std_number]["extra_plus_point"];
+        const excurrentMinus = snapshot.val()[std_number]["extra_minus_point"];
 
         updatedValue =
           currentPlus - currentMinus + excurrentPlus - excurrentMinus;
@@ -327,22 +324,18 @@ router.post("/resetterm", function (req, res, next) {
           updates["/" + std_number + `/log/${day}`] =
             "2학기 시작 상점 상쇄 (" + updatedValue + ")";
         }
-      });
-      processs.push(temp_process);
+      }
     }
-    Promise.all(processs).then(() => {
-      let a_ref = db.ref("/");
-      return a_ref
-        .update(updates)
-        .then(() => {
-          res.status(200).json({ message: "Good" });
-        })
-        .catch((error) => {
-          res.status(500).json({
-            message: `오류가 발생했습니다. manager.js ${error}`,
-          });
+    return s_ref
+      .update(updates)
+      .then(() => {
+        res.status(200).json({ message: "Good" });
+      })
+      .catch((error) => {
+        res.status(200).json({
+          message: `오류가 발생했습니다. manager.js ${error}`,
         });
-    });
+      });
   });
 });
 
