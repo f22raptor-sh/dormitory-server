@@ -308,7 +308,7 @@ router.post("/resetterm", function (req, res, next) {
 
         updatedValue =
           currentPlus - currentMinus + excurrentPlus - excurrentMinus;
-        if (updateValue > 0) {
+        if (updatedValue > 0) {
           updates["/" + std_number + "/extra_minus_point"] =
             snapshot.val()["extra_minus_point"] + updatedValue;
           updates["/" + std_number + `/log/${day}`] =
