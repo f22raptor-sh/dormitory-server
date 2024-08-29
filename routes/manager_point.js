@@ -320,7 +320,7 @@ router.post("/resetterm", function (req, res, next) {
           console.log(updatedValue);
           console.log(std_number);
           updates["/" + std_number + "/extra_minus_point"] =
-            snapshot.val()["extra_minus_point"] + updatedValue;
+            snapshot.val()[std_number]["extra_minus_point"] + updatedValue;
           updates["/" + std_number + `/log/${day}`] =
             "2학기 시작 상점 상쇄 (" + updatedValue + ")";
         }
