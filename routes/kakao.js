@@ -196,6 +196,10 @@ router.post("/", function (req, res, next) {
                             ) +
                             "\n마지막 업데이트 : " +
                             keys[keys.length - 1] +
+                            "\n\n퇴사 시작일 : " +
+                            std_data["start_day"] +
+                            "\n퇴사 종료일 : " +
+                            std_data["end_day"] +
                             "\n퇴사 상태입니다.",
                         },
                       },
@@ -228,6 +232,10 @@ router.post("/", function (req, res, next) {
                             ) +
                             "\n마지막 업데이트 : " +
                             keys[keys.length - 1] +
+                            "\n\n퇴사 시작일 : " +
+                            std_data["start_day"] +
+                            "\n퇴사 종료일 : " +
+                            std_data["end_day"] +
                             "\n퇴사 예정자 입니다.",
                         },
                       },
@@ -274,6 +282,7 @@ router.post("/", function (req, res, next) {
             )) {
               lines.push(`${timestamp} - ${content}`);
             }
+            lines.reverse();
             return res
               .json({
                 version: "2.0",
@@ -288,7 +297,7 @@ router.post("/", function (req, res, next) {
                           "\n 상벌점 기록은 다음과 같습니다.\n" +
                           lines.join("\n") +
                           "\n마지막 업데이트 : " +
-                          keys[keys.length - 1],
+                          keys[0],
                       },
                     },
                   ],

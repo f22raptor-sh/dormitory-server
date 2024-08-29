@@ -299,7 +299,7 @@ router.post("/resetterm", function (req, res, next) {
   updates = {};
   s_ref.once("value").then((snapshot) => {
     for (std_number in snapshot.val()) {
-      let s_ref = db.ref("/" + child_num + "/");
+      let s_ref = db.ref("/" + std_number + "/");
       const temp_process = s_ref.once("value").then((snapshot) => {
         const currentPlus = snapshot.val()["plus_point"];
         const currentMinus = snapshot.val()["minus_point"];
@@ -309,9 +309,9 @@ router.post("/resetterm", function (req, res, next) {
         updatedValue =
           currentPlus - currentMinus + excurrentPlus - excurrentMinus;
         if (updateValue > 0) {
-          updates["/" + child_num + "/extra_minus_point"] =
+          updates["/" + std_number + "/extra_minus_point"] =
             snapshot.val()["extra_minus_point"] + updatedValue;
-          updates["/" + child_num + `/log/${day}`] =
+          updates["/" + std_number + `/log/${day}`] =
             "2학기 시작 상점 상쇄 (" + updatedValue + ")";
         }
       });
