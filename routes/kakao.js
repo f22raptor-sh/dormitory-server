@@ -280,7 +280,9 @@ router.post("/", function (req, res, next) {
             for (const [timestamp, content] of Object.entries(
               std_data["log"]
             )) {
-              lines.push(`${timestamp} - ${content}`);
+              const [year, month, day] = timestamp.split("-");
+              const dateFormatted = `${year}-${month}-${day}`;
+              lines.push(`${dateFormatted} - ${content}`);
             }
             lines.reverse();
             return res

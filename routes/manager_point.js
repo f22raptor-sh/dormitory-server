@@ -77,18 +77,18 @@ router.post("/point", function (req, res, next) {
               if (req.body.state == '"상점"') {
                 updatedValue =
                   currentPlus + parseFloat(req.body.select_1.split("점")[0]);
-                updatetext = req.body.select_1;
+                updatetext = "+ " + req.body.select_1;
                 updates["/" + std_number + "/plus_point"] = updatedValue;
               } else if (req.body.select_1 == "이외") {
                 updatedValue =
                   currentMinus + parseFloat(req.body.select_2.split("점")[0]);
                 updates["/" + std_number + "/minus_point"] = updatedValue;
-                updatetext = req.body.select_2;
+                updatetext = "- " + req.body.select_2;
               } else {
                 updatedValue =
                   currentMinus + parseFloat(req.body.select_1.split("점")[0]);
                 updates["/" + std_number + "/minus_point"] = updatedValue;
-                updatetext = req.body.select_1;
+                updatetext = "- " + req.body.select_1;
               }
               updates["/" + std_number + `/log/${day}`] = updatetext;
             }
@@ -118,18 +118,18 @@ router.post("/point", function (req, res, next) {
               if (req.body.state == '"상점"') {
                 updatedValue =
                   currentPlus + parseFloat(req.body.select_1.split("점")[0]);
-                updatetext = req.body.select_1;
+                updatetext = "+ " + req.body.select_1;
                 updates["/" + child_num + "/plus_point"] = updatedValue;
               } else if (req.body.select_1 == "이외") {
                 updatedValue =
                   currentMinus + parseFloat(req.body.select_2.split("점")[0]);
                 updates["/" + child_num + "/minus_point"] = updatedValue;
-                updatetext = req.body.select_2;
+                updatetext = "- " + req.body.select_2;
               } else {
                 updatedValue =
                   currentMinus + parseFloat(req.body.select_1.split("점")[0]);
                 updates["/" + child_num + "/minus_point"] = updatedValue;
-                updatetext = req.body.select_1;
+                updatetext = "- " + req.body.select_1;
               }
               let updateValue = currentPlus - currentMinus;
               if (updateValue <= -6) {
