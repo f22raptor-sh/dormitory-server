@@ -37,45 +37,62 @@
             <option class="type hidden">1점 : 봉사활동 참여</option>
             <option class="type hidden">1점 : 교사재량</option>
             <option class="type hidden">1점 : 훼손물 신속신고</option>
-            <option class="type">0.3점 : 퇴실정리위반</option>
-            <option class="type">0.3점 : 방청소 불량</option>
-            <option class="type">0.5점 : 점호지각</option>
-            <option class="type">2점 : 점호불참</option>
+
+            <option class="type">1점 : 퇴실정리위반</option>
+            <option class="type">1점 : 방청소 불량</option>
+
+            <option class="type">1점 : 점호지각</option>
+
             <option class="type">1점 : 퇴실시간위반</option>
-            <option class="type">1점 : 방명찰훼손/분실</option>
-            <option class="type">1점 : 하급생방 출입</option>
+
+            <option class="type">2점 : 점호불참</option>
             <option class="type">2점 : 퇴실시간이후 취침</option>
             <option class="type">2점 : 무단출입(일과중)</option>
-            <option class="type">2점 : 무단 외출/퇴사</option>
             <option class="type">2점 : 스탠드소지</option>
             <option class="type">2점 : 음식물 반입</option>
             <option class="type">2점 : 소란행위</option>
+
             <option class="type">3점 : 귀교시간위반</option>
             <option class="type">3점 : 취침위반</option>
-            <option class="type">3점 : 공용물품무단점유</option>
             <option class="type">3점 : 방이동</option>
+
+            <option class="type">5점 : 금지품목 반입</option>
+
             <option class="type">이외</option>
           </select>
         </div>
         <div class="user-box">
           <select class="select_2 hidden" id="hight_select" name="select_2">
             <option selected="">옵션을 선택해 주세요</option>
+
+            <option class="type hight">0.3점 : 아침운동 지각</option>
+
+            <option class="type hight">1점 : 방명찰훼손/분실</option>
+            <option class="type hight">1점 : 하급생방 출입</option>
+            <option class="type hight">1점 : 아침운동 불참</option>
+
+            <option class="type hight">2점 : 무단 외출/퇴사</option>
+
+            <option class="type hight">3점 : 공용물품무단점유</option>
+
             <option class="type hight">5점 : 무단출입(퇴사자)</option>
-            <option class="type hight">5점 : 금지품목 반입</option>
+            <option class="type hight">5점 : 전자기기 사용</option>
             <option class="type hight">5점 : 기물 파손</option>
             <option class="type hight">5점 : 방문 잠그기</option>
+
             <option class="type hight">11점 : 폭력행위</option>
             <option class="type hight">11점 : 방배정위반</option>
             <option class="type hight">11점 : 괴롭힘</option>
             <option class="type hight">11점 : 음란물 소지</option>
+
             <option class="type hight">15점 : 열쇠 무단소지</option>
             <option class="type hight">15점 : 외부학생 인솔</option>
+
             <option class="type hight">20점 : 흡연 / 음주 / 도박</option>
             <option class="type hight">20점 : 형사처벌대상행위</option>
             <option class="type hight">20점 : 유해 약물</option>
             <option class="type hight">20점 : 집단폭행&괴롭힘</option>
             <option class="type hight">20점 : 불량써클</option>
-            <option class="type hight">20점 : 야간 무단이탈 3일 이상</option>
           </select>
         </div>
         <div class="button r" id="button-1">
@@ -130,9 +147,17 @@
         <div style="color: white">
           <br />학생 리스트 : excel 파일<br />
           열 이름 작성 X<br />
-          1열 : 학번 <br />
-          2열 : 이름
+          A행 : 학번 <br />
+          B행 : 이름
         </div>
+        <button
+          class="pointer"
+          type="submit"
+          style="color: white"
+          onclick="resetbutton()"
+        >
+          학기 초기화
+        </button>
       </div>
     </div>
     <h5
@@ -205,8 +230,6 @@
             const data = await response.json();
             if (data.message == "Good") {
               alert(stdnum + " 학생 인증 정보가 초기화되었습니다.");
-            } else {
-              alert("서버 오류.\n관리자에게 문의해주세요.");
             }
           } else {
             alert("서버 응답이 없습니다.\n관리자에게 문의해주세요.");
@@ -217,6 +240,35 @@
         }
       } else {
         alert("학번을 입력해주세요.");
+      }
+    }
+
+    async function resetbutton() {
+      const yes_no = prompt("정말로 학기 초기회를 진행하시겠습니까?\n(y/n)");
+      if (yes_no == "y" || yes_no == "Y") {
+        try {
+          const response = await fetch("/point/resetterm", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: 0,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.message == "Good") {
+              alert("성공적으로 학기 초기화 되었습니다.");
+            }
+          } else {
+            alert("서버 응답이 없습니다.\n관리자에게 문의해주세요.");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("데이터 전송 중 오류.\n다시 시도해주세요.");
+        }
       }
     }
   </script>

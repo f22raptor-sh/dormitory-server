@@ -77,9 +77,10 @@
           <label>종료 날자</label>
           <input type="date" required="" name="end_day" />
         </div>
-        <button type="submit" class="submit_btn pointer">일정 추가</button>
+        <button type="submit" class="submit_btn pointer">명령 퇴사</button>
       </form>
     </div>
+
     <div class="popup" id="log_popup" style="display: none; color: white">
       <span class="close-btn" onclick="closeLog()">&times;</span>
       <div id="log_text"></div>
@@ -181,6 +182,32 @@
         start_day: formData.get("start_day"),
         end_day: formData.get("end_day"),
       };
+      fetch("/list/change", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "out",
+          std_number: formData.get("std_number"),
+          start_day: formData.get("start_day"),
+          end_day: formData.get("end_day"),
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("POST 요청 실패");
+          }
+          cover_show();
+          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
+        })
+        .then((data) => {
+          location.reload();
+        })
+        .catch((error) => {
+          cover_show();
+          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
+        });
 
       try {
         const response = await fetch("/calendar/add", {
@@ -196,10 +223,12 @@
           window.location.reload();
         } else {
           cover_hide();
+          Toast_show("서버 오류. 관리자에게 문의해주세요.", 2);
           console.log("server err");
         }
       } catch (error) {
         cover_hide();
+        Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
         console.log(error);
       }
     });
@@ -300,13 +329,18 @@
     }
 
     function point_extra_plus(std_num) {
+      an = prompt("추가점수를 입력해 주세요.", "1");
       cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ action: "extra_plus", std_number: std_num }),
+        body: JSON.stringify({
+          action: "extra_plus",
+          amount: an,
+          std_number: std_num,
+        }),
       })
         .then((response) => {
           if (!response.ok) {
@@ -324,13 +358,18 @@
         });
     }
     function point_extra_minus(std_num) {
+      an = prompt("추가벌점을 입력해 주세요.", "1");
       cover_show();
       fetch("/list/change", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ action: "extra_minus", std_number: std_num }),
+        body: JSON.stringify({
+          action: "extra_minus",
+          amount: an,
+          std_number: std_num,
+        }),
       })
         .then((response) => {
           if (!response.ok) {
@@ -384,57 +423,8 @@
     }
 
     function out(std_num) {
-      cover_show();
-      fetch("/list/change", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ action: "out", std_number: std_num }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("POST 요청 실패");
-          }
-          cover_show();
-          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
-        })
-        .then((data) => {
-          location.reload();
-        })
-        .catch((error) => {
-          cover_show();
-          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
-        });
-    }
-    function end(std_num) {
-      cover_show();
-      fetch("/list/change", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ action: "end", std_number: std_num }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("POST 요청 실패");
-          }
-          cover_show();
-          return response.json(); // 서버로부터의 응답 데이터를 JSON 형태로 파싱하여 반환
-        })
-        .then((data) => {
-          location.reload();
-        })
-        .catch((error) => {
-          cover_show();
-          Toast_show("서버 응답이 없습니다. 관리자에게 문의해주세요.", 2);
-        });
-    }
-    function popup(std_num) {
       const Popup = document.getElementById("calendar_popup");
       const std = document.getElementById("stdnum");
-
       const input = document.getElementById("start_day");
       const today = new Date().toISOString().split("T")[0];
       input.value = today;

@@ -86,7 +86,7 @@ router.post("/", function (req, res, next) {
                     std_data["plus_point"] + std_data["extra_plus_point"],
                   minus_point:
                     std_data["minus_point"] + std_data["extra_minus_point"],
-                  state: "퇴사 대상자입니다.",
+                  state: "퇴사 예정자입니다.",
                   display1: true,
                   display2: true,
                   log: std_data["log"],

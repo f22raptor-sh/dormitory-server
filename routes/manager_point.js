@@ -68,9 +68,13 @@ router.post("/point", function (req, res, next) {
           for (std_number in snapshot.val()) {
             const currentPlus = snapshot.val()[std_number]["plus_point"];
             const currentMinus = snapshot.val()[std_number]["minus_point"];
-            if (std_number != "manager" && !except_num.includes(std_number)) {
+            if (
+              std_number != "manager" &&
+              (Array.isArray(except_num)
+                ? !except_num.includes(std_number)
+                : true)
+            ) {
               if (req.body.state == '"상점"') {
-                console.log("1");
                 updatedValue =
                   currentPlus + parseFloat(req.body.select_1.split("점")[0]);
                 updatetext = req.body.select_1;
@@ -128,9 +132,7 @@ router.post("/point", function (req, res, next) {
                 updatetext = req.body.select_1;
               }
               let updateValue = currentPlus - currentMinus;
-              if (updateValue <= -7) {
-                updates["/" + child_num + "/state"] = 3;
-              } else if (updateValue <= -5) {
+              if (updateValue <= -6) {
                 updates["/" + child_num + "/state"] = 2;
               }
               updates["/" + child_num + `/log/${day}`] = updatetext;
@@ -216,6 +218,8 @@ router.post("/upload", upload.single("excelFile"), (req, res) => {
           temp["extra_plus_point"] = 0;
           temp["extra_minus_point"] = 0;
           temp["state"] = 0;
+          temp["start_day"] = 0;
+          temp["end_day"] = 0;
           temp2[dataA] = dataA;
           updates[dataA] = temp;
           ref2.update(temp2);
@@ -286,8 +290,44 @@ router.post("/resetpw", function (req, res, next) {
     xlsx.writeFile(workbook, userlogPath);
     return res.status(200).json({ message: "Good" });
   } else {
-    return res.status(400).json({ error: "std_num not found" });
+    return res.status(200).json({ error: "std_num not found" });
   }
+});
+
+router.post("/resetterm", function (req, res, next) {
+  let s_ref = db.ref("/");
+  updates = {};
+  s_ref.once("value").then((snapshot) => {
+    for (std_number in snapshot.val()) {
+      let s_ref = db.ref("/" + child_num + "/");
+      const temp_process = s_ref.once("value").then((snapshot) => {
+        const currentPlus = snapshot.val()["plus_point"];
+        const currentMinus = snapshot.val()["minus_point"];
+        const excurrentPlus = snapshot.val()["extra_plus_point"];
+        const excurrentMinus = snapshot.val()["extra_minus_point"];
+
+        updatedValue =
+          currentPlus - currentMinus + excurrentPlus - excurrentMinus;
+        if (updateValue > 0) {
+          updates["/" + child_num + "/extra_minus_point"] =
+            snapshot.val()["extra_minus_point"] + updatedValue;
+          updates["/" + child_num + `/log/${day}`] =
+            "2학기 시작 상점 상쇄 (" + updatedValue + ")";
+        }
+      });
+      processs.push(temp_process);
+    }
+    return s_ref
+      .update(updates)
+      .then(() => {
+        res.status(200).json({ message: "Good" });
+      })
+      .catch((error) => {
+        res.status(200).json({
+          message: `오류가 발생했습니다. manager.js ${error}`,
+        });
+      });
+  });
 });
 
 module.exports = router;

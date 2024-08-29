@@ -137,6 +137,7 @@ router.post("/", function (req, res, next) {
         let ref = db.ref("/" + std_num + "/");
         ref.once("value", (snapshot) => {
           const std_data = snapshot.val();
+          const keys = Object.keys(std_data["log"]);
           if (method == "check") {
             if (std_data["state"] == "2") {
               return res
@@ -162,7 +163,7 @@ router.post("/", function (req, res, next) {
                                 std_data["extra_minus_point"]
                             ) +
                             "\n마지막 업데이트 : " +
-                            Object.keys(std_data["log"])[0] +
+                            keys[keys.length - 1] +
                             "\n퇴사 위험 상태입니다.",
                         },
                       },
@@ -194,7 +195,7 @@ router.post("/", function (req, res, next) {
                                 std_data["extra_minus_point"]
                             ) +
                             "\n마지막 업데이트 : " +
-                            Object.keys(std_data["log"])[0] +
+                            keys[keys.length - 1] +
                             "\n퇴사 상태입니다.",
                         },
                       },
@@ -226,8 +227,8 @@ router.post("/", function (req, res, next) {
                                 std_data["extra_minus_point"]
                             ) +
                             "\n마지막 업데이트 : " +
-                            Object.keys(std_data["log"])[0] +
-                            "\n퇴사 대상자 입니다.",
+                            keys[keys.length - 1] +
+                            "\n퇴사 예정자 입니다.",
                         },
                       },
                     ],
@@ -258,7 +259,7 @@ router.post("/", function (req, res, next) {
                                 std_data["extra_minus_point"]
                             ) +
                             "\n마지막 업데이트 : " +
-                            Object.keys(std_data["log"])[0],
+                            keys[keys.length - 1],
                         },
                       },
                     ],
@@ -287,7 +288,7 @@ router.post("/", function (req, res, next) {
                           "\n 상벌점 기록은 다음과 같습니다.\n" +
                           lines.join("\n") +
                           "\n마지막 업데이트 : " +
-                          Object.keys(std_data["log"])[0],
+                          keys[keys.length - 1],
                       },
                     },
                   ],

@@ -75,7 +75,7 @@ router.post("/", function (req, res, next) {
           temp["display2"] = true;
           temp["display3"] = false;
         } else if (child_data["state"] == "3") {
-          temp["state"] = "퇴사 대상";
+          temp["state"] = "퇴사 예정";
           temp["class_name"] = "state_target";
           temp["display1"] = true;
           temp["display2"] = true;
@@ -176,21 +176,28 @@ router.post("/change", function (req, res, next) {
         updates["minus_point"] = snapshot.val()["minus_point"] + 1;
         updates[`log/${day}`] = "- 1점 : 교사재량";
       } else if (std_method == "extra_plus") {
-        updates["extra_plus_point"] = snapshot.val()["extra_plus_point"] + 1;
-        updates[`log/${day}`] = "+ 1점 : 추가 상점";
+        const amount = req.body.amount;
+        updates["extra_plus_point"] =
+          snapshot.val()["extra_plus_point"] + amount;
+        updates[`log/${day}`] = amount + "점 : 추가 상점";
       } else if (std_method == "extra_minus") {
-        updates["extra_minus_point"] = snapshot.val()["extra_minus_point"] + 1;
-        updates[`log/${day}`] = "- 1점 : 추가 벌점";
+        const amount = req.body.amount;
+        updates["extra_minus_point"] =
+          snapshot.val()["extra_minus_point"] + amount;
+        updates[`log/${day}`] = amount + "점 : 추가 벌점";
       } else if (std_method == "out") {
-        updates["state"] = 1;
-        updates[`log/${day}`] = "* 퇴사 처리";
-      } else if (std_method == "end") {
-        updates["state"] = 0;
-        updates["plus_point"] = 0;
-        updates["minus_point"] = 0;
-        updates["extra_plus_point"] = 0;
-        updates["extra_minus_point"] = 0;
-        updates[`log/${day}`] = "* 퇴사 종료";
+        const end_date = new Date(req.body.end_day);
+        const nextDay = new Date(end_date.getTime());
+        updates["state"] = 3;
+        updates["start_day"] = req.body.start_day;
+        updates["end_day"] = nextDay.toISOString().split("T")[0];
+        updates["extra_plus_point"] =
+          snapshot.val()["extra_plus_point"] -
+          (snapshot.val()["extra_plus_point"] +
+            snapshot.val()["plus_point"] -
+            snapshot.val()["extra_minus_point"] -
+            snapshot.val()["minus_point"]);
+        updates[`log/${day}`] = "* 퇴사 ";
       }
       return ref.update(updates);
     })

@@ -1,6 +1,7 @@
 var createError = require("http-errors");
 var express = require("express");
 const fs = require("fs");
+const cron = require("node-cron");
 
 var path = require("path");
 var logger = require("morgan");
@@ -49,37 +50,37 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-function logHack(req, res, bool) {
-  const filePath = "./log/hack.txt";
-  if (bool == 1) {
-    var newText = req.session.user.num + " : " + req.ip;
-  } else {
-    var newText = req.ip;
-  }
-  fs.open(filePath, "a", (err, fd) => {
-    if (err) {
-      console.error("Error opening file:", err);
-      return;
-    }
-    fs.appendFile(fd, "\n" + newText, (err) => {
-      if (err) {
-        console.error("Error appending to file:", err);
-        return;
-      }
-      // 파일 닫기
-      fs.close(fd, (err) => {
-        if (err) {
-          console.error("Error closing file:", err);
-        }
-      });
-    });
-  });
-}
+// function logHack(req, res, bool) {
+//   const filePath = "./log/hack.txt";
+//   if (bool == 1) {
+//     var newText = req.session.user.num + " : " + req.ip;
+//   } else {
+//     var newText = req.ip;
+//   }
+//   fs.open(filePath, "a", (err, fd) => {
+//     if (err) {
+//       console.error("Error opening file:", err);
+//       return;
+//     }
+//     fs.appendFile(fd, "\n" + newText, (err) => {
+//       if (err) {
+//         console.error("Error appending to file:", err);
+//         return;
+//       }
+//       // 파일 닫기
+//       fs.close(fd, (err) => {
+//         if (err) {
+//           console.error("Error closing file:", err);
+//         }
+//       });
+//     });
+//   });
+// }
 function checkAuth(req, res, next) {
   if (req.session && req.session.user) {
     next();
   } else {
-    logHack(req, res, 0);
+    // logHack(req, res, 0);
     res.redirect("/");
   }
 }
@@ -95,14 +96,47 @@ function checkAdmin(req, res, next) {
     ) {
       next();
     } else {
-      logHack(req, res, 1);
+      // logHack(req, res, 1);
       res.redirect("/");
     }
   } else {
-    logHack(req, res, 0);
+    // logHack(req, res, 0);
     res.redirect("/");
   }
 }
+
+cron.schedule("0 0 * * *", () => {
+  const today = new Date();
+  const today_iso = today.toISOString().split("T")[0];
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const date = String(today.getDate()).padStart(2, "0");
+  const hours = String(today.getHours()).padStart(2, "0");
+  const minutes = String(today.getMinutes()).padStart(2, "0");
+  const seconds = String(today.getSeconds()).padStart(2, "0");
+  const day = `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
+
+  let s_ref = db.ref("/");
+  updates = {};
+  s_ref.once("value").then((snapshot) => {
+    for (std_number in snapshot.val()) {
+      const start_day = snapshot.val()[std_number]["start_day"];
+      const end_day = snapshot.val()[std_number]["end_day"];
+      if (std_number != "manager") {
+        if (start_day == today_iso) {
+          updates["/" + std_number + "/state"] = 1;
+          updates["/" + std_number + `/log/${day}`] = "* 퇴사 시작";
+        } else if (end_day == today_iso) {
+          updates["/" + std_number + "/state"] = 0;
+          updates["/" + std_number + `/log/${day}`] = "* 퇴사 종료";
+        }
+      }
+    }
+    return s_ref.update(updates).catch((error) => {
+      console.log(error);
+    });
+  });
+});
 
 app.use("/", indexRouter);
 app.use("/auth", checkAuth, authRouter);
