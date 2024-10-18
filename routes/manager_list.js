@@ -176,12 +176,12 @@ router.post("/change", function (req, res, next) {
         updates["minus_point"] = snapshot.val()["minus_point"] + 1;
         updates[`log/${day}`] = "- 1점 : 교사재량";
       } else if (std_method == "extra_plus") {
-        const amount = req.body.amount;
+        const amount = parseFloat(req.body.amount);
         updates["extra_plus_point"] =
           snapshot.val()["extra_plus_point"] + amount;
         updates[`log/${day}`] = "+ " + amount + "점 : 추가 상점";
       } else if (std_method == "extra_minus") {
-        const amount = req.body.amount;
+        const amount = parseFloat(req.body.amount);
         updates["extra_minus_point"] =
           snapshot.val()["extra_minus_point"] + amount;
         updates[`log/${day}`] = "+ " + amount + "점 : 추가 벌점";
